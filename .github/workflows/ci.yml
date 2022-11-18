@@ -11,7 +11,6 @@ jobs:
         php-extensions: [xdebug]
         php-configuration: [phpunit.xml]
         php-args: [--coverage-text]
-        php-env: [XDEBUG_MODE=coverage]
 
     steps:
       - name: Checkout
@@ -35,4 +34,4 @@ jobs:
           configuration: ${{ matrix.php-configuration }}
           args: ${{ matrix.php-args }}
           env:
-            ${{ matrix.php-env }}
+            XDEBUG_MODE: coverage
