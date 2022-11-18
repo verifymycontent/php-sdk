@@ -37,16 +37,16 @@ abstract class DTO
         return $this->attributes;
     }
 
-    public function setAttributes(array $attributes) {
-        $this->attributes = array_merge($this->attributes, $attributes);
-    }
-
     public function __get($name) {
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
 
         throw new InvalidArgumentException("Invalid property: " . $name);
+    }
+
+    public function __set($name, $value) {
+        throw new \Exception("Cannot set property: " . $name);
     }
 
     public function toArray(): array {

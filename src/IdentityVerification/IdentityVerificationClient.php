@@ -10,13 +10,13 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Responses\GetIdentityVerific
 
 interface IdentityVerificationClient extends ExportableClient
 {
-    const IDENTITY_VERIFICATION_API_VERSION_V1 = 'v1';
-    const IDENTITY_VERIFICATION_API_VERSIONS = [
-        self::IDENTITY_VERIFICATION_API_VERSION_V1 => IdentityVerificationClientV1::class,
+    const API_VERSION_V1 = 'v1';
+    const API_VERSIONS = [
+        self::API_VERSION_V1 => IdentityVerificationClientV1::class,
     ];
 
-    const IDENTITY_VERIFICATION_API_PRODUCTION_URL = 'https://oauth.verifymycontent.com';
-    const IDENTITY_VERIFICATION_API_SANDBOX_URL = 'https://oauth.sandbox.verifymycontent.com';
+    const PRODUCTION_URL = 'https://oauth.verifymycontent.com';
+    const SANDBOX_URL = 'https://oauth.sandbox.verifymycontent.com';
 
     public function createIdentityVerification(CreateIdentityVerificationRequest $request): CreateIdentityVerificationResponse;
 

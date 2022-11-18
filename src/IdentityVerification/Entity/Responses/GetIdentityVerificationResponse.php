@@ -16,7 +16,7 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
  */
 final class GetIdentityVerificationResponse extends DTO
 {
-    protected $fillable = ['id', 'customer', 'redirect_uri', 'webhook', 'status'];
+    protected $required = ['id', 'customer', 'redirect_uri', 'webhook', 'status'];
 
     protected $casts = [
         'customer' => Customer::class

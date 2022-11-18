@@ -3,3 +3,7 @@
 
 # PHP
 vendor/
+.phpunit.cache
+.phpunit.result.cache
+coverage/
+.test.php

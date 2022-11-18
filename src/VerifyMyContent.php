@@ -22,7 +22,7 @@ final class VerifyMyContent implements ExportableClient
 
     public function __construct($apiKey, $apiSecret){
         $this->hmac = new HMAC($apiKey, $apiSecret);
-        $this->identityVerificationClient = new (IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS[IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSION_V1])($this->hmac);
+        $this->identityVerificationClient = new (IdentityVerificationClient::API_VERSIONS[IdentityVerificationClient::API_VERSION_V1])($this->hmac);
     }
 
 
@@ -34,13 +34,32 @@ final class VerifyMyContent implements ExportableClient
         return $this->identityVerificationClient;
     }
 
-    public function setIdentityVerificationClient(string $client): void
+    /**
+     * @param string|IdentityVerificationClient $client
+     * @return void
+     */
+    public function setIdentityVerificationClient($client): void
     {
-        if (!array_key_exists($client, IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS)) {
-            throw new InvalidArgumentException('Invalid client');
+        if (is_string($client)) {
+            if (!array_key_exists($client, IdentityVerificationClient::API_VERSIONS)) {
+                throw new InvalidArgumentException(
+                    'Invalid client. Please use one of the following: ' .
+                    implode(', ', array_keys(IdentityVerificationClient::API_VERSIONS))
+                );
+            }
+
+            $this->identityVerificationClient = new (IdentityVerificationClient::API_VERSIONS[$client])($this->hmac);
+            return;
         }
 
-        $this->identityVerificationClient = new (IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS[$client])($this->hmac);
+        if (!($client instanceof IdentityVerificationClient)) {
+            throw new InvalidArgumentException(
+                'Invalid client. Please use one of the following: ' .
+                implode(', ', array_keys(IdentityVerificationClient::API_VERSIONS))
+            );
+        }
+
+        $this->identityVerificationClient = $client;
     }
 
 

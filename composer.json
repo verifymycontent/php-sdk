@@ -21,7 +21,8 @@
   ],
   "require": {
     "verifymycontent/commons": "^v1.0.1",
-    "ext-json": "*"
+    "ext-json": "*",
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {

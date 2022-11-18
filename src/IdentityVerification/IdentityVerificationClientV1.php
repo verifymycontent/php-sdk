@@ -11,8 +11,8 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Responses\GetIdentityVerific
 
 final class IdentityVerificationClientV1 implements IdentityVerificationClient
 {
-    private const ENDPOINT_CREATE_IDENTITY_CHECK = '/api/v1/identity-verification';
-    private const ENDPOINT_GET_IDENTITY_CHECK = '/api/v1/identity-verification/%s';
+    const ENDPOINT_CREATE_IDENTITY_CHECK = '/api/v1/identity-verification';
+    const ENDPOINT_GET_IDENTITY_CHECK = '/api/v1/identity-verification/%s';
 
     /**
      * @var HTTP $transport
@@ -27,7 +27,7 @@ final class IdentityVerificationClientV1 implements IdentityVerificationClient
     public function __construct(HMAC $hmac)
     {
         $this->hmac = $hmac;
-        $this->transport = new HTTP(IdentityVerificationClient::IDENTITY_VERIFICATION_API_PRODUCTION_URL);
+        $this->transport = new HTTP(IdentityVerificationClient::PRODUCTION_URL);
     }
 
     /**
@@ -68,7 +68,7 @@ final class IdentityVerificationClientV1 implements IdentityVerificationClient
 
     public function useSandbox(): void
     {
-        $this->setBaseURL(IdentityVerificationClient::IDENTITY_VERIFICATION_API_SANDBOX_URL);
+        $this->setBaseURL(IdentityVerificationClient::SANDBOX_URL);
     }
 
     public function setBaseURL(string $baseURL): void
@@ -79,4 +79,13 @@ final class IdentityVerificationClientV1 implements IdentityVerificationClient
     private function sign($input): string{
         return sprintf("hmac %s", $this->hmac->generate($input));
     }
+
+    /**
+     * @param HTTP $transport
+     */
+    public function setTransport(HTTP $transport): void
+    {
+        $this->transport = $transport;
+    }
+
 }
