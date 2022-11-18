@@ -12,6 +12,7 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
  * @property-read string $redirect_uri
  * @property-read string $webhook
  * @property-read string $status
+ * @property-read Customer $customer
  */
 final class GetIdentityVerificationResponse extends DTO
 {

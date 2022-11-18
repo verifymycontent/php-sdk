@@ -7,7 +7,6 @@ use InvalidArgumentException;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\SDK\Core\ExportableClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
-use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClientV1;
 
 final class VerifyMyContent implements ExportableClient
 {
@@ -23,8 +22,7 @@ final class VerifyMyContent implements ExportableClient
 
     public function __construct($apiKey, $apiSecret){
         $this->hmac = new HMAC($apiKey, $apiSecret);
-
-        $this->identityVerificationClient = new IdentityVerificationClientV1($this->hmac);
+        $this->identityVerificationClient = new (IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS[IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSION_V1])($this->hmac);
     }
 
 
@@ -38,11 +36,11 @@ final class VerifyMyContent implements ExportableClient
 
     public function setIdentityVerificationClient(string $client): void
     {
-        if (!class_exists($client)) {
-            throw new InvalidArgumentException("Class {$client} does not exist");
+        if (!array_key_exists($client, IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS)) {
+            throw new InvalidArgumentException('Invalid client');
         }
 
-        $this->identityVerificationClient = new $client($this->hmac);
+        $this->identityVerificationClient = new (IdentityVerificationClient::IDENTITY_VERIFICATION_API_VERSIONS[$client])($this->hmac);
     }
 
 
