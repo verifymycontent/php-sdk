@@ -24,3 +24,15 @@ jobs:
 
       - name: Check PHP Version
         run: php -v
+
+      - name: Install Composer
+        uses: php-actions/composer@v6
+
+      - name: Install PHPUnit
+        uses: php-actions/phpunit@v3
+        with:
+          php_extensions: ${{ matrix.php-extensions }}
+          configuration: ${{ matrix.php-configuration }}
+          args: ${{ matrix.php-args }}
+          env:
+            ${{ matrix.php-env }}
