@@ -1,0 +1,31 @@
+{
+  "name": "verifymycontent/sdk",
+  "description": "VerifyMyContent SDK",
+  "keywords": [
+    "verifymycontent",
+    "sdk",
+    "api",
+    "php",
+    "identity",
+    "verification",
+    "content",
+    "verification"
+  ],
+  "homepage": "https://verifymycontent.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jorge Junior",
+      "email": "jorge.junior.568@live.com"
+    }
+  ],
+  "require": {
+    "verifymycontent/commons": "^v1.0.1",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "VerifyMyContent\\SDK\\": "src/"
+    }
+  }
+}
