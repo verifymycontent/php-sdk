@@ -10,7 +10,7 @@ final class ArrayValidator extends Validator
      */
     public static function validate($input, string $field)
     {
-        if ($input && !is_array($input)) {
+        if (!is_null($input) && !is_array($input)) {
             self::throwValidationException("{$field} must be an array");
         }
     }

@@ -10,7 +10,7 @@ final class EmailValidator extends Validator
      */
     public static function validate($input, string $field)
     {
-        if ($input && !filter_var($input, FILTER_VALIDATE_EMAIL)) {
+        if (!is_null($input) && !filter_var($input, FILTER_VALIDATE_EMAIL)) {
             self::throwValidationException("{$field} is not a valid email address");
         }
     }

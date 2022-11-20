@@ -87,14 +87,14 @@ abstract class DTO
         $validator = $this->validate[$key] ?? null;
         if ($validator) {
             if (!is_array($validator)) {
-                if (!is_string($validator)) {
-                    throw new Exception("Invalid validator for {$key}");
-                }
-
                 $validator = [$validator];
             }
 
             foreach ($validator as $v) {
+                if (!is_string($v) || !class_exists($v) || !is_a($v, Validator::class, true)) {
+                    throw new InvalidArgumentException("Invalid validator: " . $v);
+                }
+
                 $v::validate($value, $key);
             }
         }

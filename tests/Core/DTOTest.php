@@ -3,6 +3,7 @@
 namespace Core;
 
 use InvalidArgumentException;
+use stdClass;
 use VerifyMyContent\SDK\Core\DTO;
 use PHPUnit\Framework\TestCase;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
@@ -99,6 +100,45 @@ class DTOTest extends TestCase
     public function testDtoShouldThrowExceptionWhenInvalidCastIsUsed(){
         $this->expectException(ValidationException::class);
 
-        $dto = new sampleDto(['id' => 1, 'name' => 'John', 'age' => 20, 'child' => 'invalid']);
+        $dto = new sampleDto(['id' => 1, 'name' => 'John', 'age' => 20, 'child' => []]);
+    }
+
+    public function testDtoShouldThrowExceptionWhenValidatorIsNotAString(){
+        $this->expectException(InvalidArgumentException::class);
+
+        $dto = new class(['id' => 1, 'name' => 'John', 'age' => 20]) extends DTO {
+            protected $fillable = ['id', 'name', 'age'];
+            protected $validate = [
+                'id' => [
+                    1
+                ]
+            ];
+        };
+    }
+
+    public function testDtoShouldThrowExceptionWhenValidatorClassNotExists(){
+        $this->expectException(InvalidArgumentException::class);
+
+        $dto = new class(['id' => 1, 'name' => 'John', 'age' => 20]) extends DTO {
+            protected $fillable = ['id', 'name', 'age'];
+            protected $validate = [
+                'id' => [
+                    'NotExistsValidator'
+                ]
+            ];
+        };
+    }
+
+    public function testDtoShouldThrowExceptionWhenValidatorClassNotExtendsFromValidator(){
+        $this->expectException(InvalidArgumentException::class);
+
+        $dto = new class(['id' => 1, 'name' => 'John', 'age' => 20]) extends DTO {
+            protected $fillable = ['id', 'name', 'age'];
+            protected $validate = [
+                'id' => [
+                    stdClass::class
+                ]
+            ];
+        };
     }
 }

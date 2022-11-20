@@ -2,8 +2,9 @@
 
 namespace VerifyMyContent\SDK\IdentityVerification;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
@@ -17,10 +18,38 @@ class IdentityVerificationClientV1Test extends TestCase
      */
     private $hmac;
 
-    protected function setUp(): void
+    public function testCreateIdentityVerification()
     {
-        parent::setUp();
-        $this->hmac = new HMAC("api-key", "api-secret");
+        $input = $this->createIdentityVerificationInput();
+        $transportMock = $this->createMock(HTTP::class);
+        $transportMock->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo(IdentityVerificationClientV1::ENDPOINT_CREATE_IDENTITY_CHECK),
+                $this->equalTo($input),
+                $this->equalTo($this->authorizationHeaders($input)),
+                $this->equalTo([201])
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getBody' => $this->createConfiguredMock(
+                    StreamInterface::class, [
+                    'getContents' => json_encode(array_merge($input, [
+                        'id' => 'identity-verification-id',
+                    ])),
+                ]),
+                'getStatusCode' => 201,
+            ]));
+
+        $client = new IdentityVerificationClientV1($this->hmac);
+        $client->setTransport($transportMock);
+
+        $response = $client->createIdentityVerification(
+            new CreateIdentityVerificationRequest($input)
+        );
+
+        $this->assertEquals($response->toArray(), array_merge($input, [
+            'id' => 'identity-verification-id',
+        ]));
     }
 
     private function createIdentityVerificationInput(): array
@@ -40,40 +69,6 @@ class IdentityVerificationClientV1Test extends TestCase
         return [
             "Authorization" => sprintf("hmac %s", $this->hmac->generate($input)),
         ];
-    }
-
-    public function testCreateIdentityVerification()
-    {
-        $input = $this->createIdentityVerificationInput();
-        $transportMock = $this->createMock(HTTP::class);
-        $transportMock->expects($this->once())
-            ->method('post')
-            ->with(
-                $this->equalTo(IdentityVerificationClientV1::ENDPOINT_CREATE_IDENTITY_CHECK),
-                $this->equalTo($input),
-                $this->equalTo($this->authorizationHeaders($input)),
-                $this->equalTo([201])
-            )
-            ->willReturn($this->createConfiguredMock(\Psr\Http\Message\ResponseInterface::class, [
-                'getBody' => $this->createConfiguredMock(
-                    \Psr\Http\Message\StreamInterface::class, [
-                    'getContents' => json_encode(array_merge($input, [
-                        'id' => 'identity-verification-id',
-                    ])),
-                ]),
-                'getStatusCode' => 201,
-            ]));
-
-        $client = new IdentityVerificationClientV1($this->hmac);
-        $client->setTransport($transportMock);
-
-        $response = $client->createIdentityVerification(
-            new CreateIdentityVerificationRequest($input)
-        );
-
-        $this->assertEquals($response->toArray(), array_merge($input, [
-            'id' => 'identity-verification-id',
-        ]));
     }
 
     public function testCreateIdentityVerificationIfTransportThrowsException()
@@ -100,7 +95,8 @@ class IdentityVerificationClientV1Test extends TestCase
         );
     }
 
-    public function testCreateIdentityVerificationIfDtoParserOfCreateIdentityVerificationResponseThrows(){
+    public function testCreateIdentityVerificationIfDtoParserOfCreateIdentityVerificationResponseThrows()
+    {
 
         $input = $this->createIdentityVerificationInput();
         $this->expectException(ValidationException::class);
@@ -114,9 +110,9 @@ class IdentityVerificationClientV1Test extends TestCase
                 $this->equalTo($this->authorizationHeaders($input)),
                 $this->equalTo([201])
             )
-            ->willReturn($this->createConfiguredMock(\Psr\Http\Message\ResponseInterface::class, [
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
                 'getBody' => $this->createConfiguredMock(
-                    \Psr\Http\Message\StreamInterface::class, [
+                    StreamInterface::class, [
                     'getContents' => json_encode(array_merge($input, [
                         'not-id' => 'identity-verification-id',
                     ])),
@@ -132,7 +128,8 @@ class IdentityVerificationClientV1Test extends TestCase
         );
     }
 
-    public function testSetBaseURL(){
+    public function testSetBaseURL()
+    {
         $transportMock = $this->createMock(HTTP::class);
         $transportMock->expects($this->once())
             ->method('setBaseURL')
@@ -143,7 +140,8 @@ class IdentityVerificationClientV1Test extends TestCase
         $client->setBaseURL("https://example-base-url.com");
     }
 
-    public function testUseSandbox(){
+    public function testUseSandbox()
+    {
         $transportMock = $this->createMock(HTTP::class);
         $transportMock->expects($this->once())
             ->method('setBaseURL')
@@ -152,14 +150,6 @@ class IdentityVerificationClientV1Test extends TestCase
         $client = new IdentityVerificationClientV1($this->hmac);
         $client->setTransport($transportMock);
         $client->useSandbox();
-    }
-
-    private function getIdentityVerificationOutput(): array
-    {
-        return array_merge(
-            $this->createIdentityVerificationInput(),
-            ["id" => "identity-verification-id", "status" => IdentityVerificationStatus::PENDING]
-        );
     }
 
     public function testGetIdentityVerification()
@@ -178,9 +168,9 @@ class IdentityVerificationClientV1Test extends TestCase
                 $this->equalTo($this->authorizationHeaders($uri)),
                 $this->equalTo([200])
             )
-            ->willReturn($this->createConfiguredMock(\Psr\Http\Message\ResponseInterface::class, [
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
                 'getBody' => $this->createConfiguredMock(
-                    \Psr\Http\Message\StreamInterface::class, [
+                    StreamInterface::class, [
                     'getContents' => json_encode($output),
                 ]),
                 'getStatusCode' => 200,
@@ -192,6 +182,14 @@ class IdentityVerificationClientV1Test extends TestCase
         $response = $client->getIdentityVerification($output["id"]);
 
         $this->assertEquals($response->toArray(), $output);
+    }
+
+    private function getIdentityVerificationOutput(): array
+    {
+        return array_merge(
+            $this->createIdentityVerificationInput(),
+            ["id" => "identity-verification-id", "status" => IdentityVerificationStatus::PENDING]
+        );
     }
 
     public function testGetIdentityVerificationIfTransportThrowsException()
@@ -220,7 +218,8 @@ class IdentityVerificationClientV1Test extends TestCase
         $client->getIdentityVerification($output["id"]);
     }
 
-    public function testGetIdentityVerificationIfDtoParserOfGetIdentityVerificationResponseThrows(){
+    public function testGetIdentityVerificationIfDtoParserOfGetIdentityVerificationResponseThrows()
+    {
 
         $output = $this->getIdentityVerificationOutput();
         $id = $output["id"];
@@ -241,9 +240,9 @@ class IdentityVerificationClientV1Test extends TestCase
                 $this->equalTo($this->authorizationHeaders($uri)),
                 $this->equalTo([200])
             )
-            ->willReturn($this->createConfiguredMock(\Psr\Http\Message\ResponseInterface::class, [
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
                 'getBody' => $this->createConfiguredMock(
-                    \Psr\Http\Message\StreamInterface::class, [
+                    StreamInterface::class, [
                     'getContents' => json_encode(array_merge($output, [
                         'not-id' => 'identity-verification-id',
                     ])),
@@ -255,5 +254,11 @@ class IdentityVerificationClientV1Test extends TestCase
         $client->setTransport($transportMock);
 
         $client->getIdentityVerification($id);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->hmac = new HMAC("api-key", "api-secret");
     }
 }
