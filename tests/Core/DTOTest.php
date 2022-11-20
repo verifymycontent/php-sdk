@@ -5,6 +5,8 @@ namespace Core;
 use InvalidArgumentException;
 use VerifyMyContent\SDK\Core\DTO;
 use PHPUnit\Framework\TestCase;
+use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
+use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
 /***
  * @property int $id
@@ -14,9 +16,13 @@ use PHPUnit\Framework\TestCase;
  */
 class sampleDto extends DTO
 {
-    protected $fillable = ['name', 'age', 'child'];
+    protected $fillable = ['id', 'name', 'age', 'child'];
 
-    protected $required = ['id'];
+    protected $validate = [
+        'id' => [
+            RequiredValidator::class,
+        ]
+    ];
 
     protected $casts = [
         'child' => sampleDto::class
@@ -69,8 +75,7 @@ class DTOTest extends TestCase
     }
 
     public function testDtoShouldThrowExceptionWhenRequiredFieldIsMissing(){
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Missing required field: id');
+        $this->expectException(ValidationException::class);
 
         new sampleDto(['name' => 'John', 'age' => 20]);
     }
@@ -92,7 +97,7 @@ class DTOTest extends TestCase
     }
 
     public function testDtoShouldThrowExceptionWhenInvalidCastIsUsed(){
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ValidationException::class);
 
         $dto = new sampleDto(['id' => 1, 'name' => 'John', 'age' => 20, 'child' => 'invalid']);
     }

@@ -20,7 +20,8 @@ final class VerifyMyContent implements ExportableClient
      */
     private $hmac;
 
-    public function __construct($apiKey, $apiSecret){
+    public function __construct($apiKey, $apiSecret)
+    {
         $this->hmac = new HMAC($apiKey, $apiSecret);
         $this->identityVerificationClient = new (IdentityVerificationClient::API_VERSIONS[IdentityVerificationClient::API_VERSION_V1])($this->hmac);
     }

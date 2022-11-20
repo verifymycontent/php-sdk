@@ -2,42 +2,42 @@
 
 namespace VerifyMyContent\SDK\Core;
 
+use Exception;
 use InvalidArgumentException;
+use VerifyMyContent\SDK\Core\Validator\ValidationException;
+use VerifyMyContent\SDK\Core\Validator\Validator;
 
 abstract class DTO
 {
     protected $fillable = [];
-    protected $required = [];
     protected $casts = [];
     protected $attributes = [];
 
-    public function __construct($data) {
-        $fillable = array_merge($this->fillable, $this->required);
-        foreach ($this->required as $required) {
-            if (!isset($data[$required])) {
-                throw new InvalidArgumentException("Missing required field: " . $required);
-            }
-        }
+    /**
+     * @var array<Validator> $validate
+     */
+    protected $validate = [];
 
-        foreach ($fillable as $key) {
+    /**
+     * @throws ValidationException
+     */
+    public function __construct(array $data)
+    {
+        foreach ($this->fillable as $key) {
+            $this->validateAttribute($key, $data[$key] ?? null);
             if (isset($data[$key])) {
-                $value = $data[$key];
-                if (isset($this->casts[$key])) {
-                    if (!is_a($value, $this->casts[$key], true)) {
-                        $value = new $this->casts[$key]($value);
-                    }
-                }
-
-                $this->attributes[$key] = $value;
+                $this->attributes[$key] = $this->castAttribute($key, $data[$key]);
             }
         }
     }
 
-    public function getAttributes(): array {
+    public function getAttributes(): array
+    {
         return $this->attributes;
     }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
@@ -45,11 +45,13 @@ abstract class DTO
         throw new InvalidArgumentException("Invalid property: " . $name);
     }
 
-    public function __set($name, $value) {
-        throw new \Exception("Cannot set property: " . $name);
+    public function __set($name, $value)
+    {
+        throw new Exception("Cannot set property: " . $name);
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $arr = [];
         foreach ($this->attributes as $key => $value) {
             if (is_object($value) && method_exists($value, 'toArray')) {
@@ -60,5 +62,41 @@ abstract class DTO
         }
 
         return $arr;
+    }
+
+    private function castAttribute($key, $value)
+    {
+        if (isset($this->casts[$key])) {
+            $castTo = $this->casts[$key];
+
+            if (is_a($value, $castTo, true)) {
+                return $value;
+            }
+
+            return new $castTo($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function validateAttribute($key, $value)
+    {
+        $validator = $this->validate[$key] ?? null;
+        if ($validator) {
+            if (!is_array($validator)) {
+                if (!is_string($validator)) {
+                    throw new Exception("Invalid validator for {$key}");
+                }
+
+                $validator = [$validator];
+            }
+
+            foreach ($validator as $v) {
+                $v::validate($value, $key);
+            }
+        }
     }
 }

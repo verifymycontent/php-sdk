@@ -3,6 +3,8 @@
 namespace VerifyMyContent\SDK\IdentityVerification\Entity\Requests;
 
 use VerifyMyContent\SDK\Core\DTO;
+use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
+use VerifyMyContent\SDK\Core\Validator\StringValidator;
 
 /**
  * Class WebhookIdentityVerificationRequest
@@ -13,5 +15,20 @@ use VerifyMyContent\SDK\Core\DTO;
  */
 final class WebhookIdentityVerificationRequest extends DTO
 {
-    protected $required = ['id', 'customer_id', 'status'];
+    protected $fillable = ['id', 'customer_id', 'status'];
+
+    protected $validate = [
+        'id' => [
+            RequiredValidator::class,
+            StringValidator::class,
+        ],
+        'customer_id' => [
+            RequiredValidator::class,
+            StringValidator::class,
+        ],
+        'status' => [
+            RequiredValidator::class,
+            StringValidator::class,
+        ],
+    ];
 }

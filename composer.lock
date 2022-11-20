@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "352b3b8739f63416393be890a147e182",
+    "content-hash": "0abf4f382cf98bf051f237d10e125532",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -2340,16 +2340,16 @@
         },
         {
             "name": "verifymycontent/commons",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/verifymycontent/php-sdk-commons.git",
-                "reference": "d7515c841aa6d8bc796ab547afb2a7fef27f425a"
+                "reference": "295f269c285ec27bfead492541941c8ba76e5399"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/verifymycontent/php-sdk-commons/zipball/d7515c841aa6d8bc796ab547afb2a7fef27f425a",
-                "reference": "d7515c841aa6d8bc796ab547afb2a7fef27f425a",
+                "url": "https://api.github.com/repos/verifymycontent/php-sdk-commons/zipball/295f269c285ec27bfead492541941c8ba76e5399",
+                "reference": "295f269c285ec27bfead492541941c8ba76e5399",
                 "shasum": ""
             },
             "require": {
@@ -2380,9 +2380,9 @@
             "description": "Commons library for VerifyMyContent PHP SDK",
             "support": {
                 "issues": "https://github.com/verifymycontent/php-sdk-commons/issues",
-                "source": "https://github.com/verifymycontent/php-sdk-commons/tree/v1.0.1"
+                "source": "https://github.com/verifymycontent/php-sdk-commons/tree/v1.0.2"
             },
-            "time": "2022-11-18T13:28:34+00:00"
+            "time": "2022-11-20T00:11:47+00:00"
         }
     ],
     "packages-dev": [],

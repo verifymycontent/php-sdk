@@ -76,7 +76,8 @@ final class IdentityVerificationClientV1 implements IdentityVerificationClient
         $this->transport->setBaseUrl($baseURL);
     }
 
-    private function sign($input): string{
+    private function sign($input): string
+    {
         return sprintf("hmac %s", $this->hmac->generate($input));
     }
 

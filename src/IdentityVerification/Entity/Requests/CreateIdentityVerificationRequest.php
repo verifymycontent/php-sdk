@@ -3,6 +3,9 @@
 namespace VerifyMyContent\SDK\IdentityVerification\Entity\Requests;
 
 use VerifyMyContent\SDK\Core\DTO;
+use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
+use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
+use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
 
 /**
@@ -14,7 +17,16 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
  */
 final class CreateIdentityVerificationRequest extends DTO
 {
-    protected $required = ['customer', 'redirect_uri', 'webhook'];
+    protected $fillable = ['customer', 'redirect_uri', 'webhook'];
+
+    protected $validate = [
+        'customer' => [
+            RequiredValidator::class,
+            ArrayValidator::class,
+        ],
+        'redirect_uri' => UrlValidator::class,
+        'webhook' => UrlValidator::class,
+    ];
 
     protected $casts = [
         'customer' => Customer::class

@@ -20,7 +20,7 @@
     }
   ],
   "require": {
-    "verifymycontent/commons": "^v1.0.1",
+    "verifymycontent/commons": "^v1.0.2",
     "ext-json": "*",
     "phpunit/phpunit": "^9.5"
   },

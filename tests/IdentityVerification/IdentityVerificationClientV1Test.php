@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
+use VerifyMyContent\SDK\Core\Validator\ValidationException;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Requests\CreateIdentityVerificationRequest;
 
 class IdentityVerificationClientV1Test extends TestCase
@@ -102,8 +103,8 @@ class IdentityVerificationClientV1Test extends TestCase
     public function testCreateIdentityVerificationIfDtoParserOfCreateIdentityVerificationResponseThrows(){
 
         $input = $this->createIdentityVerificationInput();
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Missing required field: id");
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage("id is required");
         $transportMock = $this->createMock(HTTP::class);
         $transportMock->expects($this->once())
             ->method('post')
@@ -225,8 +226,8 @@ class IdentityVerificationClientV1Test extends TestCase
         $id = $output["id"];
         unset($output["id"]);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Missing required field: id");
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage("id is required");
         $uri = sprintf(
             IdentityVerificationClientV1::ENDPOINT_GET_IDENTITY_CHECK,
             $id
