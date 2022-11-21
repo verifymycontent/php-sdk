@@ -51,7 +51,8 @@ final class VerifyMyContent implements ExportableClient
                 );
             }
 
-            $this->identityVerificationClient = new (IdentityVerificationClient::API_VERSIONS[$client])($this->hmac);
+            $identityVerificationClientClassName = IdentityVerificationClient::API_VERSIONS[$client];
+            $this->identityVerificationClient = new $identityVerificationClientClassName($this->hmac);
             return;
         }
 
