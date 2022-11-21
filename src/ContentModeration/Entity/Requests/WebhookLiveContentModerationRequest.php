@@ -15,7 +15,7 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
  * Class WebhookLiveContentModerationRequest
  * @package VerifyMyContent\SDK\ContentModeration\Entity\Requests
  * @property-read string $id
- * @property-read string $redirect_url
+ * @property-read string $login_url
  * @property-read string $external_id
  * @property-read string $status
  * @property-read string $notes
@@ -23,17 +23,18 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
  * @property-read DateTimeCast $created_at
  * @property-read DateTimeCast $updated_at
  */
-final class WebhookStaticContentModerationRequest extends DTO
+final class WebhookLiveContentModerationRequest extends DTO
 {
-    protected $fillable = ['id', 'redirect_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'login_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
 
     protected $validate = [
         'id' => [
             RequiredValidator::class,
             StringValidator::class,
         ],
-        'redirect_url' => [
-            StringValidator::class,
+        'login_url' => [
+            RequiredValidator::class,
+            UrlValidator::class,
         ],
         'external_id' => [
             StringValidator::class,

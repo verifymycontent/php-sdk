@@ -20,7 +20,7 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
  * @property-read DateTimeCast $created_at
  * @property-read DateTimeCast $updated_at
  */
-class GetStaticContentModerationResponse extends DTO
+final class GetStaticContentModerationResponse extends DTO
 {
     protected $fillable = ['id', 'redirect_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
 

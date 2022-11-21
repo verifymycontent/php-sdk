@@ -1,9 +1,10 @@
 <?php
 
-namespace VerifyMyContent\SDK\ContentModeration\Entity\Requests;
+namespace VerifyMyContent\SDK\ContentModeration\Entity\Responses;
 
 use VerifyMyContent\SDK\ContentModeration\Entity\Content;
 use VerifyMyContent\SDK\ContentModeration\Entity\Customer;
+use VerifyMyContent\SDK\ContentModeration\Entity\Stream;
 use VerifyMyContent\SDK\Core\Casts\DateTimeCast;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
@@ -12,28 +13,29 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
 use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 
 /**
- * Class WebhookLiveContentModerationRequest
- * @package VerifyMyContent\SDK\ContentModeration\Entity\Requests
+ * Class WebhookLiveContentModerationReq
+ * @package VerifyMyContent\SDK\ContentModeration\Entity\Responses
  * @property-read string $id
- * @property-read string $redirect_url
+ * @property-read string $login_url
  * @property-read string $external_id
  * @property-read string $status
  * @property-read string $notes
- * @property-read array $tags
+ * @property-read string[] $tags
  * @property-read DateTimeCast $created_at
  * @property-read DateTimeCast $updated_at
  */
-final class WebhookStaticContentModerationRequest extends DTO
+final class CreateLiveContentModerationResponse extends DTO
 {
-    protected $fillable = ['id', 'redirect_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'login_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
 
     protected $validate = [
         'id' => [
             RequiredValidator::class,
             StringValidator::class,
         ],
-        'redirect_url' => [
-            StringValidator::class,
+        'login_url' => [
+            RequiredValidator::class,
+            UrlValidator::class,
         ],
         'external_id' => [
             StringValidator::class,

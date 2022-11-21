@@ -10,6 +10,7 @@ use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClientV1;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
@@ -398,5 +399,168 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->getStaticContentModerationParticipants($output['id']);
+    }
+
+    public function testStartLiveContentModeration()
+    {
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_START_LIVE_CONTENT_MODERATION, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo([]),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [204]
+            );
+
+        $client->setTransport($mockTransport);
+        $client->startLiveContentModeration('123');
+
+        $this->assertTrue(true);
+    }
+
+    public function testStartLiveContentModerationWithInvalidStatusCode()
+    {
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_START_LIVE_CONTENT_MODERATION, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo([]),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [204]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->startLiveContentModeration('123');
+    }
+
+    private function liveContentModerationInput()
+    {
+        return [
+            "external_id" => "YOUR-LIVESTREAM-ID",
+            "embed_url" => "https://example.com/live-stream-embed",
+            "title" => "Your title",
+            "description" => "Your description",
+            "stream" => [
+                "protocol" => "rtmps",
+                "url" => "rtmps://your-server:443/your-video-stream"
+            ],
+            "webhook" => "https://example.com/webhook",
+            "customer" => [
+                "id" => "YOUR-USER-ID",
+                "email" => "person@example.com",
+                "phone" => "+4412345678"
+            ]
+        ];
+    }
+
+    private function liveContentModerationOutput()
+    {
+        return [
+            "id" => "ABC-123-5678-ABC",
+            "login_url" => "https://app.verifymycontent.com/v/ABC-123-5678-ABC",
+            "external_id" => "YOUR-CORRELATION-ID",
+            "status" => "Started",
+            "notes" => "Harmful content found.",
+            "tags" => [
+                "UNDERAGE"
+            ],
+            "created_at" => "2020-11-12 19:06:00",
+            "updated_at" => "2020-11-12 19:06:00"
+        ];
+    }
+
+    public function testCreateLiveContentModeration()
+    {
+        $input = $this->liveContentModerationInput();
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 201,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode($output)
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $response = $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
+        $this->assertEquals($output['id'], $response->id);
+        $this->assertEquals($output['login_url'], $response->login_url);
+        $this->assertEquals($output['external_id'], $response->external_id);
+        $this->assertEquals($output['status'], $response->status);
+        $this->assertEquals($output['notes'], $response->notes);
+        $this->assertEquals($output['tags'], $response->tags);
+        $this->assertEquals($output['created_at'], $response->created_at->format('Y-m-d H:i:s'));
+        $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
+    }
+
+    public function testCreateLiveContentModerationWithInvalidStatusCode()
+    {
+        $input = $this->liveContentModerationInput();
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
+    }
+
+    public function testCreateLiveContentModerationWithInvalidJson()
+    {
+        $input = $this->liveContentModerationInput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 201,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode([]),
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(ValidationException::class);
+        $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
     }
 }

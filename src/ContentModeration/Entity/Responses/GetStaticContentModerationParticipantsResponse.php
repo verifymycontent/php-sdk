@@ -15,7 +15,7 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
  * @property-read Participant $customer
  * @property string $face
  */
-class GetStaticContentModerationParticipantsResponse extends DTO
+final class GetStaticContentModerationParticipantsResponse extends DTO
 {
     protected $fillable = ['id', 'customer', 'face'];
 

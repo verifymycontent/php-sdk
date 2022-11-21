@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: test
+        name: test
+        entry: make test
+        language: system
+        types: [file]
+        pass_filenames: false
