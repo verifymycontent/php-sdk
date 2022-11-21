@@ -30,6 +30,7 @@ jobs:
       - name: Install PHPUnit
         uses: php-actions/phpunit@v3
         with:
+          php_version: ${{ matrix.php-version }}
           php_extensions: ${{ matrix.php-extensions }}
           configuration: ${{ matrix.php-configuration }}
           args: ${{ matrix.php-args }}
