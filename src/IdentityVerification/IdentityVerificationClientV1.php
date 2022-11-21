@@ -5,6 +5,7 @@ namespace VerifyMyContent\SDK\IdentityVerification;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
+use VerifyMyContent\SDK\Core\Validator\ValidationException;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Requests\CreateIdentityVerificationRequest;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Responses\CreateIdentityVerificationResponse;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Responses\GetIdentityVerificationResponse;
@@ -49,7 +50,10 @@ final class IdentityVerificationClientV1 implements IdentityVerificationClient
     }
 
     /**
+     * @param string $id
+     * @return GetIdentityVerificationResponse
      * @throws InvalidStatusCodeException
+     * @throws ValidationException
      */
     public function getIdentityVerification(string $id): GetIdentityVerificationResponse
     {

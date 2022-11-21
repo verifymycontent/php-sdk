@@ -49,4 +49,10 @@ class DateTimeCastTest extends TestCase
 
         $this->assertEquals('2019-01-01 00:00:00', $dateTime->format('Y-m-d H:i:s'));
     }
+
+    public function testShouldReturnDateForZeroDate(){
+        $dateTime = new DateTimeCast('0001-01-01T00:00:00Z');
+
+        $this->assertEquals('0001-01-01 00:00:00', $dateTime->format('Y-m-d H:i:s'));
+    }
 }

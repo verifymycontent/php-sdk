@@ -3,10 +3,10 @@
 namespace VerifyMyContent\SDK\ContentModeration\Entity;
 
 use VerifyMyContent\SDK\Core\DTO;
+use VerifyMyContent\SDK\Core\Entity\Document;
 use VerifyMyContent\SDK\Core\Validator\EmailValidator;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
 use VerifyMyContent\SDK\Core\Validator\StringValidator;
-use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 
 /**
  * Class Customer

@@ -2,6 +2,7 @@
 
 namespace ContentModeration;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use VerifyMyContent\Commons\Security\HMAC;
@@ -9,7 +10,6 @@ use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClientV1;
-use PHPUnit\Framework\TestCase;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
@@ -20,10 +20,17 @@ class ContentModerationClientV1Test extends TestCase
      */
     private $hmac;
 
-    protected function setUp(): void
+    public function testUseSandbox()
     {
-        parent::setUp();
-        $this->hmac = new HMAC('api-key', 'api-secret');
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $mockTransport->expects($this->once())
+            ->method('setBaseURL')
+            ->with(ContentModerationClient::SANDBOX_URL);
+
+        $client->setTransport($mockTransport);
+
+        $client->useSandbox();
     }
 
     private function newCmc(): ContentModerationClientV1
@@ -36,19 +43,8 @@ class ContentModerationClientV1Test extends TestCase
         return $this->createMock(HTTP::class);
     }
 
-    public function testUseSandbox(){
-        $client = $this->newCmc();
-        $mockTransport = $this->mockTransport();
-        $mockTransport->expects($this->once())
-            ->method('setBaseURL')
-            ->with(ContentModerationClient::SANDBOX_URL);
-
-        $client->setTransport($mockTransport);
-
-        $client->useSandbox();
-    }
-
-    public function testSetBaseURL(){
+    public function testSetBaseURL()
+    {
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
         $mockTransport->expects($this->once())
@@ -60,41 +56,8 @@ class ContentModerationClientV1Test extends TestCase
         $client->setBaseURL('https://example.com');
     }
 
-    private function staticContentInput(): array {
-        return [
-            'content' => [
-                'external_id' => 'YOUR-VIDEO-ID',
-                'type' => 'video',
-                'url' => 'https://example.com/video.mp4',
-                'title' => 'Your title',
-                'description' => 'Your description'
-            ],
-            'customer' => [
-                'id' => 'YOUR-USER-ID',
-                'email' => 'person@example.com',
-                'phone' => '+4412345678',
-            ],
-            'webhook' => 'https://example.com/webhook',
-
-        ];
-    }
-
-    private function staticContentOutput(): array{
-        return  [
-            "id" => "ABC-123-5678-ABC",
-            "redirect_url" => "https://app.verifymycontent.com/v/ABC-123-5678-ABC",
-            "external_id" => "YOUR-CORRELATION-ID",
-            "status" => "Rejected",
-            "notes" => "Harmful content found.",
-            "tags" => [
-                "UNDERAGE"
-            ],
-            "created_at" => "2020-11-12 19:06:00",
-            "updated_at" => "2020-11-12 19:06:00"
-        ];
-    }
-
-    public function testCreateStaticContentModeration(){
+    public function testCreateStaticContentModeration()
+    {
         $input = $this->staticContentInput();
         $output = $this->staticContentOutput();
         $client = $this->newCmc();
@@ -127,7 +90,44 @@ class ContentModerationClientV1Test extends TestCase
         $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
     }
 
-    public function testCreateStaticContentModerationWithInvalidStatusCode(){
+    private function staticContentInput(): array
+    {
+        return [
+            'content' => [
+                'external_id' => 'YOUR-VIDEO-ID',
+                'type' => 'video',
+                'url' => 'https://example.com/video.mp4',
+                'title' => 'Your title',
+                'description' => 'Your description'
+            ],
+            'customer' => [
+                'id' => 'YOUR-USER-ID',
+                'email' => 'person@example.com',
+                'phone' => '+4412345678',
+            ],
+            'webhook' => 'https://example.com/webhook',
+
+        ];
+    }
+
+    private function staticContentOutput(): array
+    {
+        return [
+            "id" => "ABC-123-5678-ABC",
+            "redirect_url" => "https://app.verifymycontent.com/v/ABC-123-5678-ABC",
+            "external_id" => "YOUR-CORRELATION-ID",
+            "status" => "Rejected",
+            "notes" => "Harmful content found.",
+            "tags" => [
+                "UNDERAGE"
+            ],
+            "created_at" => "2020-11-12 19:06:00",
+            "updated_at" => "2020-11-12 19:06:00"
+        ];
+    }
+
+    public function testCreateStaticContentModerationWithInvalidStatusCode()
+    {
         $input = $this->staticContentInput();
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
@@ -146,7 +146,8 @@ class ContentModerationClientV1Test extends TestCase
         $client->createStaticContentModeration(new CreateStaticContentModerationRequest($input));
     }
 
-    public function testCreateStaticContentModerationWithInvalidResponse(){
+    public function testCreateStaticContentModerationWithInvalidResponse()
+    {
         $input = $this->staticContentInput();
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
@@ -204,7 +205,8 @@ class ContentModerationClientV1Test extends TestCase
         $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
     }
 
-    public function testGetStaticContentModerationWithInvalidStatusCode(){
+    public function testGetStaticContentModerationWithInvalidStatusCode()
+    {
         $output = $this->staticContentOutput();
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
@@ -224,7 +226,8 @@ class ContentModerationClientV1Test extends TestCase
         $client->getStaticContentModeration($output['id']);
     }
 
-    public function testGetStaticContentModerationWithInvalidResponse(){
+    public function testGetStaticContentModerationWithInvalidResponse()
+    {
         $output = $this->staticContentOutput();
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
@@ -247,5 +250,153 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->getStaticContentModeration($output['id']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->hmac = new HMAC('api-key', 'api-secret');
+    }
+
+    private function staticContentParticipantsOutput(): array
+    {
+        return [
+            "id" => "ABC-123-5678-ABC",
+            "customer" => [
+                "id" => "CUSTOMER-ID",
+                "document" => [
+                    "type" => "driving-license",
+                    "country" => "GBR",
+                    "number" => "ABC-123",
+                    "issued_at" => "2017-04-13",
+                    "expires_at" => "2027-04-13",
+                    "name" => "John Snow",
+                    "dob" => "1991-09-06",
+                    "mrz" => [
+                        "P<GBRSNOW<<JOHN<<<<<<<<<<<<<<<<<<<<",
+                        "123456789012345<<<<<<<<<<<<<<<<<<00"
+                    ],
+                    "photos" => [
+                        "https://docs.verifymycontent.com/front.jpg",
+                        "https://docs.verifymycontent.com/back.jpg"
+                    ]
+                ],
+            ],
+            "face" => "https://example.com/face.jpg",
+        ];
+    }
+
+    public function testGetStaticContentModerationParticipantsResponse()
+    {
+        $output = $this->staticContentParticipantsOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS, $output['id']);
+
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 200,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode($output)
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $response = $client->getStaticContentModerationParticipants($output['id']);
+
+        $this->assertEquals($output['id'], $response->id);
+        $this->assertEquals($output['customer']['id'], $response->customer->id);
+        $this->assertEquals($output['customer']['document']['type'], $response->customer->document->type);
+        $this->assertEquals($output['customer']['document']['country'], $response->customer->document->country);
+        $this->assertEquals($output['customer']['document']['number'], $response->customer->document->number);
+        $this->assertEquals($output['customer']['document']['issued_at'], $response->customer->document->issued_at->format('Y-m-d'));
+        $this->assertEquals($output['customer']['document']['expires_at'], $response->customer->document->expires_at->format('Y-m-d'));
+        $this->assertEquals($output['customer']['document']['name'], $response->customer->document->name);
+        $this->assertEquals($output['customer']['document']['dob'], $response->customer->document->dob->format('Y-m-d'));
+        $this->assertEquals($output['customer']['document']['mrz'][0], $response->customer->document->mrz[0]);
+        $this->assertEquals($output['customer']['document']['mrz'][1], $response->customer->document->mrz[1]);
+        $this->assertEquals($output['customer']['document']['photos'][0], $response->customer->document->photos[0]);
+        $this->assertEquals($output['customer']['document']['photos'][1], $response->customer->document->photos[1]);
+        $this->assertEquals($output['face'], $response->face);
+    }
+
+    public function testGetStaticContentModerationParticipantsWithInvalidStatusCode()
+    {
+        $output = $this->staticContentParticipantsOutput();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS, $output['id']);
+
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->getStaticContentModerationParticipants($output['id']);
+    }
+
+    public function testGetStaticContentModerationParticipantsWithInvalidJson()
+    {
+        $output = $this->staticContentParticipantsOutput();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS, $output['id']);
+
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 200,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode([])
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(ValidationException::class);
+        $client->getStaticContentModerationParticipants($output['id']);
+    }
+
+    public function testGetStaticContentModerationParticipantsWithInvalidJson2()
+    {
+        $output = $this->staticContentParticipantsOutput();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS, $output['id']);
+
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 200,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode(['id' => '123'])
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(ValidationException::class);
+        $client->getStaticContentModerationParticipants($output['id']);
     }
 }
