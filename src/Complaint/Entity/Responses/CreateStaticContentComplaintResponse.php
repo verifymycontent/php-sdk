@@ -1,9 +1,9 @@
 <?php
 
-namespace VerifyMyContent\SDK\ContentModeration\Entity\Requests;
+namespace VerifyMyContent\SDK\Complaint\Entity\Responses;
 
-use VerifyMyContent\SDK\ContentModeration\Entity\Content;
-use VerifyMyContent\SDK\ContentModeration\Entity\Customer;
+use VerifyMyContent\SDK\Complaint\Entity\Customer;
+use VerifyMyContent\SDK\Complaint\Entity\Stream;
 use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
@@ -12,45 +12,47 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
 use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 
 /**
- * Class WebhookLiveContentModerationRequest
- * @package VerifyMyContent\SDK\ContentModeration\Entity\Requests
+ * Class CreateStaticContentComplaintResponse
+ * @package VerifyMyContent\SDK\Complaint\Entity\Responses
  * @property-read string $id
- * @property-read string $redirect_url
  * @property-read string $external_id
- * @property-read string $status
  * @property-read string $notes
- * @property-read array $tags
+ * @property-read string $status
+ * @property-read string[] $tags
  * @property-read DateTime $created_at
  * @property-read DateTime $updated_at
  */
-final class WebhookStaticContentModerationRequest extends DTO
+final class CreateStaticContentComplaintResponse extends DTO
 {
-    protected $fillable = ['id', 'redirect_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = ['external_id', 'id', 'notes', 'status', 'tags', 'created_at', 'updated_at'];
 
     protected $validate = [
+        'external_id' => [
+            RequiredValidator::class,
+            StringValidator::class,
+        ],
         'id' => [
             RequiredValidator::class,
             StringValidator::class,
         ],
-        'redirect_url' => [
-            StringValidator::class,
-        ],
-        'external_id' => [
+        'notes' => [
+            RequiredValidator::class,
             StringValidator::class,
         ],
         'status' => [
-            StringValidator::class,
-        ],
-        'notes' => [
+            RequiredValidator::class,
             StringValidator::class,
         ],
         'tags' => [
+            RequiredValidator::class,
             ArrayValidator::class,
         ],
         'created_at' => [
+            RequiredValidator::class,
             StringValidator::class,
         ],
         'updated_at' => [
+            RequiredValidator::class,
             StringValidator::class,
         ],
     ];

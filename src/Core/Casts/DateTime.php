@@ -2,11 +2,11 @@
 
 namespace VerifyMyContent\SDK\Core\Casts;
 
-use DateTime;
+use DateTime as BuiltInDateTime;
 use DateTimeZone;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
-final class DateTimeCast extends DateTime
+final class DateTime extends BuiltInDateTime
 {
     public function __construct($time){
         try {

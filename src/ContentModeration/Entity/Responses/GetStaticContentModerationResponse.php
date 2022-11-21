@@ -2,7 +2,7 @@
 
 namespace VerifyMyContent\SDK\ContentModeration\Entity\Responses;
 
-use VerifyMyContent\SDK\Core\Casts\DateTimeCast;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
@@ -17,8 +17,8 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
  * @property-read string $status
  * @property-read string $notes
  * @property-read array $tags
- * @property-read DateTimeCast $created_at
- * @property-read DateTimeCast $updated_at
+ * @property-read DateTime $created_at
+ * @property-read DateTime $updated_at
  */
 final class GetStaticContentModerationResponse extends DTO
 {
@@ -53,7 +53,7 @@ final class GetStaticContentModerationResponse extends DTO
     ];
 
     protected $casts = [
-        'created_at' => DateTimeCast::class,
-        'updated_at' => DateTimeCast::class,
+        'created_at' => DateTime::class,
+        'updated_at' => DateTime::class,
     ];
 }

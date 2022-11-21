@@ -14,6 +14,11 @@ use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
 interface ContentModerationClient extends ExportableClient
 {
+    const API_VERSION_V1 = 'v1';
+    const API_VERSIONS = [
+        self::API_VERSION_V1 => ContentModerationClientV1::class,
+    ];
+
     const PRODUCTION_URL = 'https://moderation.verifymycontent.com';
     const SANDBOX_URL = 'https://moderation.sandbox.verifymycontent.com';
 

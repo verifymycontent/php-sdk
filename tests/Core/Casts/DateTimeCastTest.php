@@ -2,7 +2,7 @@
 
 namespace Core\Casts;
 
-use VerifyMyContent\SDK\Core\Casts\DateTimeCast;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use PHPUnit\Framework\TestCase;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
@@ -12,46 +12,46 @@ class DateTimeCastTest extends TestCase
     {
         $this->expectException(ValidationException::class);
 
-        new DateTimeCast(1);
+        new DateTime(1);
     }
 
     public function testShouldThrowIfValueIsNotValidDate()
     {
         $this->expectException(ValidationException::class);
 
-        new DateTimeCast('2019-13-01');
+        new DateTime('2019-13-01');
     }
 
     public function testShouldThrowIfValueIsNotValidTime()
     {
         $this->expectException(ValidationException::class);
 
-        new DateTimeCast('2019-01-01 25:00:00');
+        new DateTime('2019-01-01 25:00:00');
     }
 
     public function testShouldThrowIfValueIsNotValidDateTime()
     {
         $this->expectException(ValidationException::class);
 
-        new DateTimeCast('2019-01-01 25:00:00');
+        new DateTime('2019-01-01 25:00:00');
     }
 
     public function testShouldReturnDateTimeObject()
     {
-        $dateTime = new DateTimeCast('2019-01-01 00:00:00');
+        $dateTime = new DateTime('2019-01-01 00:00:00');
 
         $this->assertInstanceOf(\DateTime::class, $dateTime);
     }
 
     public function testShouldReturnDateTimeObjectWithCorrectDate()
     {
-        $dateTime = new DateTimeCast('2019-01-01 00:00:00');
+        $dateTime = new DateTime('2019-01-01 00:00:00');
 
         $this->assertEquals('2019-01-01 00:00:00', $dateTime->format('Y-m-d H:i:s'));
     }
 
     public function testShouldReturnDateForZeroDate(){
-        $dateTime = new DateTimeCast('0001-01-01T00:00:00Z');
+        $dateTime = new DateTime('0001-01-01T00:00:00Z');
 
         $this->assertEquals('0001-01-01 00:00:00', $dateTime->format('Y-m-d H:i:s'));
     }

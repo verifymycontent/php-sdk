@@ -5,6 +5,8 @@ namespace VerifyMyContent\SDK;
 use Exception;
 use InvalidArgumentException;
 use VerifyMyContent\Commons\Security\HMAC;
+use VerifyMyContent\SDK\Complaint\ComplaintClient;
+use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\Core\ExportableClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
 
@@ -20,12 +22,28 @@ final class VerifyMyContent implements ExportableClient
      */
     private $hmac;
 
+    /**
+     * @var ContentModerationClient $contentModerationClient
+     */
+    private $contentModerationClient;
+
+    /**
+     * @var ComplaintClient $complaintClient
+     */
+    private $complaintClient;
+
     public function __construct($apiKey, $apiSecret)
     {
         $this->hmac = new HMAC($apiKey, $apiSecret);
 
         $identityVerificationClientClassName = IdentityVerificationClient::API_VERSIONS[IdentityVerificationClient::API_VERSION_V1];
         $this->identityVerificationClient = new $identityVerificationClientClassName($this->hmac);
+
+        $contentModerationClientClassName = ContentModerationClient::API_VERSIONS[ContentModerationClient::API_VERSION_V1];
+        $this->contentModerationClient = new $contentModerationClientClassName($this->hmac);
+
+        $consentComplaintClientClassName = ComplaintClient::API_VERSIONS[ComplaintClient::API_VERSION_V1];
+        $this->complaintClient = new $consentComplaintClientClassName($this->hmac);
     }
 
 
@@ -37,33 +55,67 @@ final class VerifyMyContent implements ExportableClient
         return $this->identityVerificationClient;
     }
 
+    public function contentModeration(): ContentModerationClient
+    {
+        return $this->contentModerationClient;
+    }
+
+    public function complaint(): ComplaintClient
+    {
+        return $this->complaintClient;
+    }
+
+
+    private function setClient($client, $clientAttribute, $clientClass, $clientVersions): void
+    {
+        if (is_string($client)) {
+            if (!array_key_exists($client, $clientVersions)) {
+                throw new InvalidArgumentException(
+                    'Invalid client. Please use one of the following: ' .
+                    implode(', ', array_keys($clientVersions))
+                );
+            }
+
+            $clientClassName = $clientVersions[$client];
+            $this->$clientAttribute = new $clientClassName($this->hmac);
+            return;
+        }
+
+        if (!($client instanceof $clientClass)) {
+            throw new InvalidArgumentException(
+                'Invalid client. Please use one of the following: ' .
+                implode(', ', array_keys($clientVersions))
+            );
+        }
+
+        $this->$clientAttribute = $client;
+    }
+
     /**
      * @param string|IdentityVerificationClient $client
      * @return void
      */
     public function setIdentityVerificationClient($client): void
     {
-        if (is_string($client)) {
-            if (!array_key_exists($client, IdentityVerificationClient::API_VERSIONS)) {
-                throw new InvalidArgumentException(
-                    'Invalid client. Please use one of the following: ' .
-                    implode(', ', array_keys(IdentityVerificationClient::API_VERSIONS))
-                );
-            }
+        $this->setClient($client, 'identityVerificationClient', IdentityVerificationClient::class, IdentityVerificationClient::API_VERSIONS);
+    }
 
-            $identityVerificationClientClassName = IdentityVerificationClient::API_VERSIONS[$client];
-            $this->identityVerificationClient = new $identityVerificationClientClassName($this->hmac);
-            return;
-        }
+    /**
+     * @param string|ContentModerationClient $client
+     * @return void
+     */
+    public function setContentModerationClient($client): void
+    {
+        $this->setClient($client, 'contentModerationClient', ContentModerationClient::class, ContentModerationClient::API_VERSIONS);
+    }
 
-        if (!($client instanceof IdentityVerificationClient)) {
-            throw new InvalidArgumentException(
-                'Invalid client. Please use one of the following: ' .
-                implode(', ', array_keys(IdentityVerificationClient::API_VERSIONS))
-            );
-        }
-
-        $this->identityVerificationClient = $client;
+    /**
+     * @param string|ComplaintClient $client
+     * @return void
+     */
+    public function setComplaintClient($client): void
+    {
+        $this->setClient($client, 'complaintClient', ComplaintClient::class, ComplaintClient::API_VERSIONS);
     }
 
 
@@ -84,5 +136,7 @@ final class VerifyMyContent implements ExportableClient
     public function useSandbox(): void
     {
         $this->identityVerificationClient->useSandbox();
+        $this->contentModerationClient->useSandbox();
+        $this->complaintClient->useSandbox();
     }
 }

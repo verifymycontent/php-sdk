@@ -5,7 +5,7 @@ namespace VerifyMyContent\SDK\ContentModeration\Entity\Responses;
 use VerifyMyContent\SDK\ContentModeration\Entity\Content;
 use VerifyMyContent\SDK\ContentModeration\Entity\Customer;
 use VerifyMyContent\SDK\ContentModeration\Entity\Stream;
-use VerifyMyContent\SDK\Core\Casts\DateTimeCast;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
@@ -21,8 +21,8 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
  * @property-read string $status
  * @property-read string $notes
  * @property-read string[] $tags
- * @property-read DateTimeCast $created_at
- * @property-read DateTimeCast $updated_at
+ * @property-read DateTime $created_at
+ * @property-read DateTime $updated_at
  */
 final class CreateLiveContentModerationResponse extends DTO
 {
@@ -58,7 +58,7 @@ final class CreateLiveContentModerationResponse extends DTO
     ];
 
     protected $casts = [
-        'created_at' => DateTimeCast::class,
-        'updated_at' => DateTimeCast::class,
+        'created_at' => DateTime::class,
+        'updated_at' => DateTime::class,
     ];
 }

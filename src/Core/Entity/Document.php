@@ -2,7 +2,7 @@
 
 namespace VerifyMyContent\SDK\Core\Entity;
 
-use VerifyMyContent\SDK\Core\Casts\DateTimeCast;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
 use VerifyMyContent\SDK\Core\Validator\StringValidator;
@@ -13,10 +13,10 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
  * @property-read string $type
  * @property-read string $country
  * @property-read string $number
- * @property-read DateTimeCast $issued_at
- * @property-read DateTimeCast $expires_at
+ * @property-read DateTime $issued_at
+ * @property-read DateTime $expires_at
  * @property-read string $name
- * @property-read DateTimeCast $dob
+ * @property-read DateTime $dob
  * @property-read string[]|null $mrz
  * @property-read string[]|null $photos
  */
@@ -65,8 +65,8 @@ final class Document extends DTO
     ];
 
     protected $casts = [
-        'issued_at' => DateTimeCast::class,
-        'expires_at' => DateTimeCast::class,
-        'dob' => DateTimeCast::class,
+        'issued_at' => DateTime::class,
+        'expires_at' => DateTime::class,
+        'dob' => DateTime::class,
     ];
 }
