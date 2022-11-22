@@ -2,8 +2,10 @@
 
 namespace VerifyMyContent\SDK\Core;
 
+use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 use VerifyMyContent\SDK\Core\Validator\Validator;
 
@@ -56,6 +58,10 @@ abstract class DTO
         foreach ($this->attributes as $key => $value) {
             if (is_object($value) && method_exists($value, 'toArray')) {
                 $value = $value->toArray();
+            }
+
+            if ($value instanceof DateTime) {
+                $value = $value->format(DateTimeInterface::ATOM);
             }
 
             $arr[$key] = $value;
