@@ -16,7 +16,7 @@ use VerifyMyContent\SDK\Core\Validator\StringValidator;
  * @property-read string $external_id
  * @property-read string $status
  * @property-read string $notes
- * @property-read array $tags
+ * @property-read string[] $tags
  * @property-read DateTime $created_at
  * @property-read DateTime $updated_at
  */

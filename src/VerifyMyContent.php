@@ -7,10 +7,9 @@ use InvalidArgumentException;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\SDK\Complaint\ComplaintClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
-use VerifyMyContent\SDK\Core\ExportableClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
 
-final class VerifyMyContent implements ExportableClient
+final class VerifyMyContent implements VerifyMyContentInterface
 {
     /**
      * @var IdentityVerificationClient $identityVerificationClient
