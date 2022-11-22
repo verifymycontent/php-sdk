@@ -32,4 +32,8 @@ final class Customer extends DTO
             ArrayValidator::class,
         ],
     ];
+
+    protected $casts = [
+        'document' => Document::class
+    ];
 }
