@@ -10,6 +10,7 @@ use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClientV1;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
@@ -562,5 +563,169 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
+    }
+
+    public function testGetLiveContentModeration()
+    {
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_LIVE_CONTENT_MODERATION, $output['id']);
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 200,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode($output)
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $response = $client->getLiveContentModeration($output['id']);
+        $this->assertEquals($output['id'], $response->id);
+        $this->assertEquals($output['login_url'], $response->login_url);
+        $this->assertEquals($output['external_id'], $response->external_id);
+        $this->assertEquals($output['status'], $response->status);
+        $this->assertEquals($output['notes'], $response->notes);
+        $this->assertEquals($output['tags'], $response->tags);
+        $this->assertEquals($output['created_at'], $response->created_at->format('Y-m-d H:i:s'));
+        $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetLiveContentModerationWithInvalidStatusCode()
+    {
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_LIVE_CONTENT_MODERATION, $output['id']);
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->getLiveContentModeration($output['id']);
+    }
+
+    public function testGetLiveContentModerationWithInvalidJson()
+    {
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_GET_LIVE_CONTENT_MODERATION, $output['id']);
+        $mockTransport->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                [200]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 200,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode([]),
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(ValidationException::class);
+        $client->getLiveContentModeration($output['id']);
+    }
+
+    public function testCreateAnonymousLiveContentModeration()
+    {
+        $output = $this->liveContentModerationOutput();
+        $input = $this->liveContentModerationInput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 201,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode($output)
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $response = $client->createAnonymousLiveContentModeration(new CreateAnonymousLiveContentModerationRequest($input));
+        $this->assertEquals($output['id'], $response->id);
+        $this->assertEquals($output['login_url'], $response->login_url);
+        $this->assertEquals($output['external_id'], $response->external_id);
+        $this->assertEquals($output['status'], $response->status);
+        $this->assertEquals($output['notes'], $response->notes);
+        $this->assertEquals($output['tags'], $response->tags);
+        $this->assertEquals($output['created_at'], $response->created_at->format('Y-m-d H:i:s'));
+        $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
+    }
+
+    public function testCreateAnonymousLiveContentModerationWithInvalidStatusCode()
+    {
+        $input = $this->liveContentModerationInput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->createAnonymousLiveContentModeration(new CreateAnonymousLiveContentModerationRequest($input));
+    }
+
+    public function testCreateAnonymousLiveContentModerationWithInvalidJson()
+    {
+        $input = $this->liveContentModerationInput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 201,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode([])
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(ValidationException::class);
+        $client->createAnonymousLiveContentModeration(new CreateAnonymousLiveContentModerationRequest($input));
     }
 }

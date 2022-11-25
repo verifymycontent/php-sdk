@@ -5,10 +5,12 @@ namespace VerifyMyContent\SDK\ContentModeration;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\Commons\Transport\HTTP;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse;
+use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetStaticContentModerationParticipantsResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetStaticContentModerationResponse;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
@@ -20,6 +22,8 @@ final class ContentModerationClientV1 implements ContentModerationClient
     const ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS = '/api/v1/moderation/%s/participants';
     const ENDPOINT_START_LIVE_CONTENT_MODERATION = '/api/v1/livestream/%s/start';
     const ENDPOINT_CREATE_LIVE_CONTENT_MODERATION = '/api/v1/livestream';
+    const ENDPOINT_GET_LIVE_CONTENT_MODERATION = '/api/v1/livestream/%s';
+    const ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION = '/api/v1/livestream-anonymous';
 
     /**
      * @var HTTP $transport
@@ -143,6 +147,46 @@ final class ContentModerationClientV1 implements ContentModerationClient
     {
         $response = $this->transport->post(
             self::ENDPOINT_CREATE_LIVE_CONTENT_MODERATION,
+            $request->toArray(),
+            [
+                'Authorization' => $this->hmac->generate($request->toArray(), true),
+            ],
+            [201]
+        );
+
+        return new CreateLiveContentModerationResponse(json_decode($response->getBody()->getContents(), true));
+    }
+
+    /**
+     * @param string $id
+     * @return GetLiveContentModerationResponse
+     * @throws InvalidStatusCodeException
+     * @throws ValidationException
+     */
+    public function getLiveContentModeration(string $id): GetLiveContentModerationResponse
+    {
+        $uri = sprintf(self::ENDPOINT_GET_LIVE_CONTENT_MODERATION, $id);
+        $response = $this->transport->get(
+            $uri,
+            [
+                'Authorization' => $this->hmac->generate($uri, true),
+            ],
+            [200]
+        );
+
+        return new GetLiveContentModerationResponse(json_decode($response->getBody()->getContents(), true));
+    }
+
+    /**
+     * @param CreateAnonymousLiveContentModerationRequest $request
+     * @return CreateLiveContentModerationResponse
+     * @throws InvalidStatusCodeException
+     * @throws ValidationException
+     */
+    public function createAnonymousLiveContentModeration(CreateAnonymousLiveContentModerationRequest $request): CreateLiveContentModerationResponse
+    {
+        $response = $this->transport->post(
+            self::ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION,
             $request->toArray(),
             [
                 'Authorization' => $this->hmac->generate($request->toArray(), true),

@@ -4,6 +4,7 @@ namespace Core;
 
 use InvalidArgumentException;
 use stdClass;
+use VerifyMyContent\SDK\Core\Casts\DateTime;
 use VerifyMyContent\SDK\Core\DTO;
 use PHPUnit\Framework\TestCase;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
@@ -14,19 +15,21 @@ use VerifyMyContent\SDK\Core\Validator\ValidationException;
  * @property-read string $name
  * @property-read int $age
  * @property-read sampleDto $child
+ * @property-read DateTime $date
  */
 class sampleDto extends DTO
 {
-    protected $fillable = ['id', 'name', 'age', 'child'];
+    protected $fillable = ['id', 'name', 'age', 'date', 'child'];
 
     protected $validate = [
         'id' => [
             RequiredValidator::class,
-        ]
+        ],
     ];
 
     protected $casts = [
-        'child' => sampleDto::class
+        'child' => sampleDto::class,
+        'date' => DateTime::class,
     ];
 }
 
@@ -140,5 +143,23 @@ class DTOTest extends TestCase
                 ]
             ];
         };
+    }
+
+    public function testDtoShouldUseNowAsDefaultDateIfNotPassed()
+    {
+        $dto = new sampleDto(['id' => 1, 'name' => 'John', 'age' => 20, 'date' => '']);
+        $now = new \DateTime();
+        $this->assertEquals($dto->date->format('Y-m-d'), $now->format('Y-m-d'));
+    }
+
+    public function testDtoShouldUseAtomDateOnToArray()
+    {
+        $dto = new sampleDto(['id' => 1, 'name' => 'John', 'age' => 20, 'date' => '2019-01-01']);
+        $this->assertEquals($dto->toArray(), [
+            'id' => 1,
+            'name' => 'John',
+            'age' => 20,
+            'date' => '2019-01-01T00:00:00+00:00'
+        ]);
     }
 }

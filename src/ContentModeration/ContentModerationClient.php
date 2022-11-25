@@ -3,10 +3,12 @@
 namespace VerifyMyContent\SDK\ContentModeration;
 
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse;
+use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetStaticContentModerationParticipantsResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetStaticContentModerationResponse;
 use VerifyMyContent\SDK\Core\ExportableClient;
@@ -60,4 +62,20 @@ interface ContentModerationClient extends ExportableClient
      * @throws ValidationException
      */
     public function createLiveContentModeration(CreateLiveContentModerationRequest $request): CreateLiveContentModerationResponse;
+
+    /**
+     * @param string $id
+     * @return GetLiveContentModerationResponse
+     * @throws InvalidStatusCodeException
+     * @throws ValidationException
+     */
+    public function getLiveContentModeration(string $id): GetLiveContentModerationResponse;
+
+    /**
+     * @param CreateAnonymousLiveContentModerationRequest $request
+     * @return CreateLiveContentModerationResponse
+     * @return void
+     * @throws InvalidStatusCodeException
+     */
+    public function createAnonymousLiveContentModeration(CreateAnonymousLiveContentModerationRequest $request): CreateLiveContentModerationResponse;
 }
