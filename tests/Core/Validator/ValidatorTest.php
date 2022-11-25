@@ -87,6 +87,11 @@ class ValidatorTest extends TestCase
 
         $this->assertTrue(true);
     }
+    public function testEmailShouldNotThrowIfValueIsEmpty(){
+        EmailValidator::validate('', 'my-field');
+
+        $this->assertTrue(true);
+    }
 
     public function testEmailShouldThrowIfValueIsNotEmail(){
         $this->expectException(ValidationException::class);

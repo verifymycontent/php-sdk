@@ -10,7 +10,7 @@ final class UrlValidator extends Validator
      */
     public static function validate($input, string $field)
     {
-        if (!is_null($input) && !filter_var($input, FILTER_VALIDATE_URL)) {
+        if (!empty($input) && !filter_var($input, FILTER_VALIDATE_URL)) {
             self::throwValidationException("{$field} must be a valid URL");
         }
     }
