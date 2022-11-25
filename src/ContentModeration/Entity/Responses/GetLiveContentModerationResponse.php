@@ -34,7 +34,6 @@ final class GetLiveContentModerationResponse extends DTO
             StringValidator::class,
         ],
         'login_url' => [
-            RequiredValidator::class,
             UrlValidator::class,
         ],
         'external_id' => [
