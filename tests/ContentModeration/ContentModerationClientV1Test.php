@@ -412,7 +412,7 @@ class ContentModerationClientV1Test extends TestCase
             ->method('patch')
             ->with(
                 $this->equalTo($uri),
-                $this->equalTo([]),
+                $this->equalTo(null),
                 $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
                 [204]
             );
@@ -433,7 +433,7 @@ class ContentModerationClientV1Test extends TestCase
             ->method('patch')
             ->with(
                 $this->equalTo($uri),
-                $this->equalTo([]),
+                $this->equalTo(null),
                 $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
                 [204]
             )

@@ -129,7 +129,7 @@ final class ContentModerationClientV1 implements ContentModerationClient
         $uri = sprintf(self::ENDPOINT_START_LIVE_CONTENT_MODERATION, $id);
         $this->transport->patch(
             $uri,
-            [],
+            null,
             [
                 'Authorization' => $this->hmac->generate($uri, true),
             ],
