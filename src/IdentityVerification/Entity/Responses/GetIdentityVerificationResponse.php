@@ -7,6 +7,7 @@ use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
 use VerifyMyContent\SDK\Core\Validator\StringValidator;
 use VerifyMyContent\SDK\Core\Validator\UrlValidator;
+use VerifyMyContent\SDK\Core\Entity\Document;
 use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
 
 /**
@@ -17,10 +18,12 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
  * @property-read string $webhook
  * @property-read string $status
  * @property-read Customer $customer
+ * @property-read Document $document
+ * @property-read string $face
  */
 final class GetIdentityVerificationResponse extends DTO
 {
-    protected $fillable = ['id', 'customer', 'redirect_uri', 'webhook', 'status'];
+    protected $fillable = ['id', 'customer', 'redirect_uri', 'webhook', 'status', 'document', 'face'];
 
     protected $validate = [
         'id' => [
@@ -37,9 +40,16 @@ final class GetIdentityVerificationResponse extends DTO
             RequiredValidator::class,
             StringValidator::class,
         ],
+        'document' => [
+            ArrayValidator::class,
+        ],
+        'face' => [
+            StringValidator::class,
+        ],
     ];
 
     protected $casts = [
-        'customer' => Customer::class
+        'customer' => Customer::class,
+        'document' => Document::class,
     ];
 }

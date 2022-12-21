@@ -44,6 +44,10 @@ abstract class DTO
             return $this->attributes[$name];
         }
 
+        if (in_array($name, $this->fillable)) {
+            return;
+        }
+
         throw new InvalidArgumentException("Invalid property: " . $name);
     }
 
