@@ -18,6 +18,11 @@ class IdentityVerificationClientV1Test extends TestCase
      */
     private $hmac;
 
+    private function arrayExcept(array $array, array $keys): array
+    {
+        return array_diff_key($array, array_flip($keys));
+    }
+
     public function testCreateIdentityVerification()
     {
         $input = $this->createIdentityVerificationInput();
@@ -181,14 +186,89 @@ class IdentityVerificationClientV1Test extends TestCase
 
         $response = $client->getIdentityVerification($output["id"]);
 
-        $this->assertEquals($response->toArray(), $output);
+        $this->assertEquals($response->id, $output["id"]);
+        $this->assertEquals($response->status, $output["status"]);
+        $this->assertEquals($response->customer->id, $output["customer"]["id"]);
+        $this->assertEquals($response->customer->email, $output["customer"]["email"]);
+        $this->assertEquals($response->redirect_uri, $output["redirect_uri"]);
+        $this->assertEquals($response->webhook, $output["webhook"]);
+        $this->assertEquals($response->document->type, $output["document"]["type"]);
+        $this->assertEquals($response->document->country, $output["document"]["country"]);
+        $this->assertEquals($response->document->number, $output["document"]["number"]);
+        $this->assertEquals($response->document->issued_at->format('Y-m-d'), $output["document"]["issued_at"]);
+        $this->assertEquals($response->document->expires_at->format('Y-m-d'), $output["document"]["expires_at"]);
+        $this->assertEquals($response->document->name, $output["document"]["name"]);
+        $this->assertEquals($response->document->dob->format('Y-m-d'), $output["document"]["dob"]);
+        $this->assertEquals($response->document->mrz, $output["document"]["mrz"]);
+        $this->assertEquals($response->document->photos, $output["document"]["photos"]);
+        $this->assertEquals($response->face, $output["face"]);
+    }
+
+    public function testGetIdentityVerificationWithNoDocument()
+    {
+        $output = $this->getIdentityVerificationOutput();
+        $uri = sprintf(
+            IdentityVerificationClientV1::ENDPOINT_GET_IDENTITY_CHECK,
+            $output["id"]
+        );
+
+        $transportMock = $this->createMock(HTTP::class);
+        $transportMock->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($this->authorizationHeaders($uri)),
+                $this->equalTo([200])
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getBody' => $this->createConfiguredMock(
+                    StreamInterface::class, [
+                    'getContents' => json_encode($this->arrayExcept($output, ["document", "face"])),
+                ]),
+                'getStatusCode' => 200,
+            ]));
+
+        $client = new IdentityVerificationClientV1($this->hmac);
+        $client->setTransport($transportMock);
+
+        $response = $client->getIdentityVerification($output["id"]);
+
+        $this->assertEquals($response->id, $output["id"]);
+        $this->assertEquals($response->status, $output["status"]);
+        $this->assertEquals($response->customer->id, $output["customer"]["id"]);
+        $this->assertEquals($response->customer->email, $output["customer"]["email"]);
+        $this->assertEquals($response->redirect_uri, $output["redirect_uri"]);
+        $this->assertEquals($response->webhook, $output["webhook"]);
+        $this->assertEmpty($response->document);
+        $this->assertEmpty($response->face);
     }
 
     private function getIdentityVerificationOutput(): array
     {
         return array_merge(
             $this->createIdentityVerificationInput(),
-            ["id" => "identity-verification-id", "status" => IdentityVerificationStatus::PENDING]
+            [
+                "id" => "identity-verification-id",
+                "status" => IdentityVerificationStatus::PENDING,
+                "document" => [
+                    "type" => "driving-license",
+                    "country" => "GBR",
+                    "number" => "ABC-123",
+                    "issued_at" => "2017-04-13",
+                    "expires_at" => "2027-04-13",
+                    "name" => "John Snow",
+                    "dob" => "1991-09-06",
+                    "mrz" => [
+                        "P<GBRSNOW<<JOHN<<<<<<<<<<<<<<<<<<<<",
+                        "123456789012345<<<<<<<<<<<<<<<<<<00"
+                    ],
+                    "photos" => [
+                        "https://docs.verifymycontent.com/front.jpg",
+                        "https://docs.verifymycontent.com/back.jpg"
+                    ]
+                ],
+                "face" => "https://docs.verifymycontent.com/face.jpg",
+            ]
         );
     }
 
