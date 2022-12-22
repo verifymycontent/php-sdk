@@ -195,8 +195,8 @@ class IdentityVerificationClientV1Test extends TestCase
         $this->assertEquals($response->document->type, $output["document"]["type"]);
         $this->assertEquals($response->document->country, $output["document"]["country"]);
         $this->assertEquals($response->document->number, $output["document"]["number"]);
-        $this->assertEquals($response->document->issued_at->format('Y-m-d'), $output["document"]["issued_at"]);
-        $this->assertEquals($response->document->expires_at->format('Y-m-d'), $output["document"]["expires_at"]);
+        $this->assertEquals($response->document->issued_at, $output["document"]["issued_at"]);
+        $this->assertEquals($response->document->expires_at, $output["document"]["expires_at"]);
         $this->assertEquals($response->document->name, $output["document"]["name"]);
         $this->assertEquals($response->document->dob->format('Y-m-d'), $output["document"]["dob"]);
         $this->assertEquals($response->document->mrz, $output["document"]["mrz"]);

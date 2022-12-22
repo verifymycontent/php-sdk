@@ -318,8 +318,8 @@ class ContentModerationClientV1Test extends TestCase
         $this->assertEquals($output['customer']['document']['type'], $response->customer->document->type);
         $this->assertEquals($output['customer']['document']['country'], $response->customer->document->country);
         $this->assertEquals($output['customer']['document']['number'], $response->customer->document->number);
-        $this->assertEquals($output['customer']['document']['issued_at'], $response->customer->document->issued_at->format('Y-m-d'));
-        $this->assertEquals($output['customer']['document']['expires_at'], $response->customer->document->expires_at->format('Y-m-d'));
+        $this->assertEquals($output['customer']['document']['issued_at'], $response->customer->document->issued_at);
+        $this->assertEquals($output['customer']['document']['expires_at'], $response->customer->document->expires_at);
         $this->assertEquals($output['customer']['document']['name'], $response->customer->document->name);
         $this->assertEquals($output['customer']['document']['dob'], $response->customer->document->dob->format('Y-m-d'));
         $this->assertEquals($output['customer']['document']['mrz'][0], $response->customer->document->mrz[0]);
