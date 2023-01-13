@@ -99,7 +99,7 @@ require(__DIR__ . "/vendor/autoload.php");
 $vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
 //$vmc->useSandbox();
 
-$response = $vmc->contentModeration()->createContentModeration([
+$response = $vmc->contentModeration()->createStaticContentModerationV2([
   "content" => [
     "type" => "video",
     "external_id" => "YOUR-VIDEO-ID",
