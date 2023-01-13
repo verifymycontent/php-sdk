@@ -32,6 +32,14 @@ interface ContentModerationClient extends ExportableClient
      */
     public function createStaticContentModeration(CreateStaticContentModerationRequest $request): CreateStaticContentModerationResponse;
 
+  /**
+   * @param CreateStaticContentModerationRequest $request
+   * @return CreateStaticContentModerationResponse
+   * @throws InvalidStatusCodeException
+   * @throws ValidationException
+   */
+  public function createStaticContentModerationV2(CreateStaticContentModerationRequest $request): CreateStaticContentModerationResponse;
+
     /**
      * @param string $id
      * @return GetStaticContentModerationResponse
