@@ -18,6 +18,7 @@ use VerifyMyContent\SDK\Core\Validator\ValidationException;
 final class ContentModerationClientV1 implements ContentModerationClient
 {
     const ENDPOINT_CREATE_STATIC_CONTENT_MODERATION = '/api/v1/moderation';
+    const ENDPOINT_CREATE_STATIC_CONTENT_MODERATION_V2 = '/api/v2/moderation';
     const ENDPOINT_GET_STATIC_CONTENT_MODERATION = '/api/v1/moderation/%s';
     const ENDPOINT_GET_STATIC_CONTENT_MODERATION_PARTICIPANTS = '/api/v1/moderation/%s/participants';
     const ENDPOINT_START_LIVE_CONTENT_MODERATION = '/api/v1/livestream/%s/start';
@@ -78,6 +79,26 @@ final class ContentModerationClientV1 implements ContentModerationClient
 
         return new CreateStaticContentModerationResponse(json_decode($response->getBody()->getContents(), true));
     }
+
+  /**
+   * @param CreateStaticContentModerationRequest $request
+   * @return CreateStaticContentModerationResponse
+   * @throws InvalidStatusCodeException
+   * @throws ValidationException
+   */
+  public function createStaticContentModerationV2(CreateStaticContentModerationRequest $request): CreateStaticContentModerationResponse
+  {
+    $response = $this->transport->post(
+      self::ENDPOINT_CREATE_STATIC_CONTENT_MODERATION_V2,
+      $request->toArray(),
+      [
+        'Authorization' => $this->hmac->generate($request->toArray(), true),
+      ],
+      [201]
+    );
+
+    return new CreateStaticContentModerationResponse(json_decode($response->getBody()->getContents(), true));
+  }
 
     /**
      * @param string $id
