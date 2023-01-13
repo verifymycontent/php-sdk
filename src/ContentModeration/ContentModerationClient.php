@@ -74,8 +74,8 @@ interface ContentModerationClient extends ExportableClient
     /**
      * @param CreateAnonymousLiveContentModerationRequest $request
      * @return CreateLiveContentModerationResponse
-     * @return void
      * @throws InvalidStatusCodeException
+     * @throws ValidationException
      */
     public function createAnonymousLiveContentModeration(CreateAnonymousLiveContentModerationRequest $request): CreateLiveContentModerationResponse;
 }
