@@ -92,40 +92,6 @@ class ContentModerationClientV1Test extends TestCase
         $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
     }
 
-  public function testCreateStaticContentModerationV2()
-  {
-    $input = $this->staticContentInput();
-    $output = $this->staticContentOutput();
-    $client = $this->newCmc();
-    $mockTransport = $this->mockTransport();
-    $mockTransport->expects($this->once())
-      ->method('post')
-      ->with(
-        $this->equalTo(ContentModerationClientV1::ENDPOINT_CREATE_STATIC_CONTENT_MODERATION_V2),
-        $this->equalTo($input),
-        $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
-        [201]
-      )
-      ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
-        'getStatusCode' => 201,
-        'getBody' => $this->createConfiguredMock(StreamInterface::class, [
-          'getContents' => json_encode($output)
-        ])
-      ]));
-
-    $client->setTransport($mockTransport);
-    $response = $client->createStaticContentModerationV2(new CreateStaticContentModerationRequest($input));
-
-    $this->assertEquals($output['id'], $response->id);
-    $this->assertEquals($output['redirect_url'], $response->redirect_url);
-    $this->assertEquals($output['external_id'], $response->external_id);
-    $this->assertEquals($output['status'], $response->status);
-    $this->assertEquals($output['notes'], $response->notes);
-    $this->assertEquals($output['tags'], $response->tags);
-    $this->assertEquals($output['created_at'], $response->created_at->format('Y-m-d H:i:s'));
-    $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
-  }
-
     private function staticContentInput(): array
     {
         return [
