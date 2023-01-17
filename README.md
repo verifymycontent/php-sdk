@@ -88,7 +88,8 @@ if ($webhook->status === \VerifyMyContent\SDK\IdentityVerification\IdentityVerif
 
 ### Create a Static Content Moderation
 
-Use the `createStaticContentModeration` of the `VerifyMyContent\SDK\ContentModeration\ContentModerationClient` abstraction inside `VerifyMyContent\VerifyMyContent` passing an `VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest` and receiving an `VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse`.
+Use the `createStaticContentModerationV2` of the `VerifyMyContent\SDK\ContentModeration\ContentModerationClient` abstraction inside `VerifyMyContent\VerifyMyContent` passing an `VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest` and receiving an `VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse`.
+We still have available the method `createStaticContentModeration`, which is the previous version of the above, but we strongly recommend not to use it, since the v2 fixes provides more security to the whole flow
 
 ```php
 <?php
@@ -98,7 +99,7 @@ require(__DIR__ . "/vendor/autoload.php");
 $vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
 //$vmc->useSandbox();
 
-$response = $vmc->contentModeration()->createContentModeration([
+$response = $vmc->contentModeration()->createStaticContentModerationV2([
   "content" => [
     "type" => "video",
     "external_id" => "YOUR-VIDEO-ID",
