@@ -8,12 +8,18 @@ use VerifyMyContent\SDK\ContentModeration\Entity\Stream;
 use VerifyMyContent\SDK\Core\DTO;
 use VerifyMyContent\SDK\Core\Validator\ArrayValidator;
 use VerifyMyContent\SDK\Core\Validator\RequiredValidator;
+use VerifyMyContent\SDK\Core\Validator\RulesValidator;
 use VerifyMyContent\SDK\Core\Validator\StringValidator;
 use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 
 final class CreateLiveContentModerationRequest extends DTO
 {
-    protected $fillable = ['external_id', 'embed_url', 'title', 'description', 'stream', 'webhook', 'customer'];
+    protected $fillable = [
+        'external_id', 'embed_url',
+        'title', 'description',
+        'stream', 'rule',
+        'webhook', 'customer'
+    ];
 
     protected $validate = [
         'external_id' => [
@@ -34,12 +40,15 @@ final class CreateLiveContentModerationRequest extends DTO
             RequiredValidator::class,
             ArrayValidator::class,
         ],
-        'webhook' => [
-            UrlValidator::class,
+        'rule' => [
+            StringValidator::class,
         ],
         'customer' => [
             RequiredValidator::class,
             ArrayValidator::class,
+        ],
+        'webhook' => [
+            UrlValidator::class,
         ],
     ];
 
