@@ -13,6 +13,7 @@ use VerifyMyContent\SDK\ContentModeration\ContentModerationClientV1;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
 class ContentModerationClientV1Test extends TestCase
@@ -481,6 +482,13 @@ class ContentModerationClientV1Test extends TestCase
         ];
     }
 
+    private function changeLiveContentRule($rule = 'default')
+    {
+        return [
+           'rule' => $rule,
+        ];
+    }
+
     public function testCreateLiveContentModeration()
     {
         $input = $this->liveContentModerationInput();
@@ -763,5 +771,50 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->createAnonymousLiveContentModeration(new CreateAnonymousLiveContentModerationRequest($input));
+    }
+
+
+    public function testChangeLiveContentRule()
+    {
+        $input = $this->changeLiveContentRule();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_CHANGE_LIVE_CONTENT_RULE, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [204]
+            );
+
+        $client->setTransport($mockTransport);
+        $client->changeLiveContentRule('123', new ChangeLiveContentRuleRequest($input));
+
+        $this->assertTrue(true);
+    }
+
+    public function testChangeLiveContentRuleInvalidStatusCode()
+    {
+        $input = $this->changeLiveContentRule();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_CHANGE_LIVE_CONTENT_RULE, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [204]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->changeLiveContentRule('123', new ChangeLiveContentRuleRequest($input));
     }
 }
