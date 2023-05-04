@@ -17,7 +17,7 @@ class VerifyMyContentTest extends TestCase
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct("Xablau");
         $this->hmac = new HMAC('api-key', 'api-secret');
     }
 
