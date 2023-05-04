@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: [7.4, 8.0, 8.1]
+        php-version: [8.1, 8.2]
         php-extensions: [xdebug]
         php-configuration: [phpunit.xml]
         php-args: [--coverage-text]
@@ -30,7 +30,7 @@ jobs:
           php_version: ${{ matrix.php-version }}
 
       - name: Install PHPUnit
-        uses: php-actions/phpunit@v2
+        uses: php-actions/phpunit@v3
         with:
           php_version: ${{ matrix.php-version }}
           php_extensions: ${{ matrix.php-extensions }}
