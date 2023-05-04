@@ -30,7 +30,7 @@ jobs:
           php_version: ${{ matrix.php-version }}
 
       - name: Install PHPUnit
-        uses: php-actions/phpunit@v3
+        uses: php-actions/phpunit@v2
         with:
           php_version: ${{ matrix.php-version }}
           php_extensions: ${{ matrix.php-extensions }}
