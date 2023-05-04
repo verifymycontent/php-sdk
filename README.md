@@ -255,6 +255,7 @@ if ($webhook->status === \VerifyMyContent\SDK\ContentModeration\ContentModeratio
 }
 ```
 
+
 ### Updating Live Stream moderation rules
 
 This endpoint allows you to update the moderation rules for a specific live stream
