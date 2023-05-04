@@ -36,5 +36,6 @@ jobs:
           php_extensions: ${{ matrix.php-extensions }}
           configuration: ${{ matrix.php-configuration }}
           args: ${{ matrix.php-args }}
+          version: 9.5
         env:
           XDEBUG_MODE: coverage

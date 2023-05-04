@@ -254,3 +254,19 @@ if ($webhook->status === \VerifyMyContent\SDK\ContentModeration\ContentModeratio
     // do your thing
 }
 ```
+
+
+### Updating Live Stream moderation rules
+
+This endpoint allows you to update the moderation rules for a specific live stream
+
+```php
+<?php
+
+require(__DIR__ . "/vendor/autoload.php");
+    
+$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
+//$vmc->useSandbox();
+
+$vmc->contentModeration()->changeLiveContentRule("YOUR-CONTENT-MODERATION-ID");
+```

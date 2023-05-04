@@ -13,6 +13,7 @@ use VerifyMyContent\SDK\ContentModeration\ContentModerationClientV1;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
 class ContentModerationClientV1Test extends TestCase
@@ -444,7 +445,7 @@ class ContentModerationClientV1Test extends TestCase
         $client->startLiveContentModeration('123');
     }
 
-    private function liveContentModerationInput()
+    private function liveContentModerationInput($rule = 'default')
     {
         return [
             "external_id" => "YOUR-LIVESTREAM-ID",
@@ -455,6 +456,7 @@ class ContentModerationClientV1Test extends TestCase
                 "protocol" => "rtmps",
                 "url" => "rtmps://your-server:443/your-video-stream"
             ],
+            "rule" => $rule,
             "webhook" => "https://example.com/webhook",
             "customer" => [
                 "id" => "YOUR-USER-ID",
@@ -477,6 +479,13 @@ class ContentModerationClientV1Test extends TestCase
             ],
             "created_at" => "2020-11-12 19:06:00",
             "updated_at" => "2020-11-12 19:06:00"
+        ];
+    }
+
+    private function changeLiveContentRule($rule = 'default')
+    {
+        return [
+           'rule' => $rule,
         ];
     }
 
@@ -563,6 +572,41 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
+    }
+
+    public function testCreateLiveContentModerationWithNoNudityRule()
+    {
+        $input = $this->liveContentModerationInput("no-nudity");
+        $output = $this->liveContentModerationOutput();
+
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = ContentModerationClientV1::ENDPOINT_CREATE_LIVE_CONTENT_MODERATION;
+        $mockTransport->expects($this->once())
+            ->method('post')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [201]
+            )
+            ->willReturn($this->createConfiguredMock(ResponseInterface::class, [
+                'getStatusCode' => 201,
+                'getBody' => $this->createConfiguredMock(StreamInterface::class, [
+                    'getContents' => json_encode($output)
+                ])
+            ]));
+
+        $client->setTransport($mockTransport);
+        $response = $client->createLiveContentModeration(new CreateLiveContentModerationRequest($input));
+        $this->assertEquals($output['id'], $response->id);
+        $this->assertEquals($output['login_url'], $response->login_url);
+        $this->assertEquals($output['external_id'], $response->external_id);
+        $this->assertEquals($output['status'], $response->status);
+        $this->assertEquals($output['notes'], $response->notes);
+        $this->assertEquals($output['tags'], $response->tags);
+        $this->assertEquals($output['created_at'], $response->created_at->format('Y-m-d H:i:s'));
+        $this->assertEquals($output['updated_at'], $response->updated_at->format('Y-m-d H:i:s'));
     }
 
     public function testGetLiveContentModeration()
@@ -727,5 +771,50 @@ class ContentModerationClientV1Test extends TestCase
         $client->setTransport($mockTransport);
         $this->expectException(ValidationException::class);
         $client->createAnonymousLiveContentModeration(new CreateAnonymousLiveContentModerationRequest($input));
+    }
+
+
+    public function testChangeLiveContentRule()
+    {
+        $input = $this->changeLiveContentRule();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_CHANGE_LIVE_CONTENT_RULE, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [204]
+            );
+
+        $client->setTransport($mockTransport);
+        $client->changeLiveContentRule('123', new ChangeLiveContentRuleRequest($input));
+
+        $this->assertTrue(true);
+    }
+
+    public function testChangeLiveContentRuleInvalidStatusCode()
+    {
+        $input = $this->changeLiveContentRule();
+        $client = $this->newCmc();
+        $mockTransport = $this->mockTransport();
+        $uri = sprintf(ContentModerationClientV1::ENDPOINT_CHANGE_LIVE_CONTENT_RULE, '123');
+
+        $mockTransport->expects($this->once())
+            ->method('patch')
+            ->with(
+                $this->equalTo($uri),
+                $this->equalTo($input),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
+                [204]
+            )
+            ->willThrowException(new InvalidStatusCodeException(400));
+
+        $client->setTransport($mockTransport);
+        $this->expectException(InvalidStatusCodeException::class);
+        $client->changeLiveContentRule('123', new ChangeLiveContentRuleRequest($input));
     }
 }

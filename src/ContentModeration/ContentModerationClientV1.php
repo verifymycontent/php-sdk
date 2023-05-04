@@ -8,6 +8,7 @@ use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetLiveContentModerationResponse;
@@ -25,6 +26,7 @@ final class ContentModerationClientV1 implements ContentModerationClient
     const ENDPOINT_CREATE_LIVE_CONTENT_MODERATION = '/api/v1/livestream';
     const ENDPOINT_GET_LIVE_CONTENT_MODERATION = '/api/v1/livestream/%s';
     const ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION = '/api/v1/livestream-anonymous';
+    const ENDPOINT_CHANGE_LIVE_CONTENT_RULE = '/api/v1/livestream/%s/rule';
 
     /**
      * @var HTTP $transport
@@ -196,5 +198,24 @@ final class ContentModerationClientV1 implements ContentModerationClient
         );
 
         return new CreateLiveContentModerationResponse(json_decode($response->getBody()->getContents(), true));
+    }
+
+    /**
+     * @param string $id
+     * @param ChangeLiveContentRuleRequest $request
+     * @return void
+     * @throws InvalidStatusCodeException
+     */
+    public function changeLiveContentRule(string $id, ChangeLiveContentRuleRequest $request): void
+    {
+        $uri = sprintf(self::ENDPOINT_CHANGE_LIVE_CONTENT_RULE, $id);
+        $this->transport->patch(
+            $uri,
+            $request->toArray(),
+            [
+                'Authorization' => $this->hmac->generate($request->toArray(), true),
+            ],
+            [204]
+        );
     }
 }
