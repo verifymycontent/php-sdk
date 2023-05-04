@@ -6,6 +6,7 @@ use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetLiveContentModerationResponse;
@@ -78,4 +79,12 @@ interface ContentModerationClient extends ExportableClient
      * @throws ValidationException
      */
     public function createAnonymousLiveContentModeration(CreateAnonymousLiveContentModerationRequest $request): CreateLiveContentModerationResponse;
+
+    /**
+    * @param string $id
+    * @param ChangeLiveContentRuleRequest $request
+    * @return void
+    * @throws InvalidStatusCodeException
+    */
+    public function changeLiveContentRule(string $id, ChangeLiveContentRuleRequest $request): void;
 }

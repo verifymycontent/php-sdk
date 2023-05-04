@@ -202,6 +202,7 @@ final class ContentModerationClientV1 implements ContentModerationClient
 
     /**
      * @param string $id
+     * @param ChangeLiveContentRuleRequest $request
      * @return void
      * @throws InvalidStatusCodeException
      */
