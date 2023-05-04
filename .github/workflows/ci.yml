@@ -20,7 +20,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: phpunit:9.5
 
       - name: Check PHP Version
         run: php -v
