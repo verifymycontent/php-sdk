@@ -237,25 +237,7 @@ class IdentityVerificationClientV1Test extends TestCase
             $this->createIdentityVerificationInput(),
             [
                 "id" => "identity-verification-id",
-                "status" => IdentityVerificationStatus::PENDING,
-                "document" => [
-                    "type" => "driving-license",
-                    "country" => "GBR",
-                    "number" => "ABC-123",
-                    "issued_at" => "2017-04-13",
-                    "expires_at" => "2027-04-13",
-                    "name" => "John Snow",
-                    "dob" => "1991-09-06",
-                    "mrz" => [
-                        "P<GBRSNOW<<JOHN<<<<<<<<<<<<<<<<<<<<",
-                        "123456789012345<<<<<<<<<<<<<<<<<<00"
-                    ],
-                    "photos" => [
-                        "https://docs.verifymycontent.com/front.jpg",
-                        "https://docs.verifymycontent.com/back.jpg"
-                    ]
-                ],
-                "face" => "https://docs.verifymycontent.com/face.jpg",
+                "status" => IdentityVerificationStatus::PENDING
             ]
         );
     }
