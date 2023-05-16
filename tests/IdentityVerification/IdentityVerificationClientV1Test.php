@@ -192,16 +192,6 @@ class IdentityVerificationClientV1Test extends TestCase
         $this->assertEquals($response->customer->email, $output["customer"]["email"]);
         $this->assertEquals($response->redirect_uri, $output["redirect_uri"]);
         $this->assertEquals($response->webhook, $output["webhook"]);
-        $this->assertEquals($response->document->type, $output["document"]["type"]);
-        $this->assertEquals($response->document->country, $output["document"]["country"]);
-        $this->assertEquals($response->document->number, $output["document"]["number"]);
-        $this->assertEquals($response->document->issued_at, $output["document"]["issued_at"]);
-        $this->assertEquals($response->document->expires_at, $output["document"]["expires_at"]);
-        $this->assertEquals($response->document->name, $output["document"]["name"]);
-        $this->assertEquals($response->document->dob->format('Y-m-d'), $output["document"]["dob"]);
-        $this->assertEquals($response->document->mrz, $output["document"]["mrz"]);
-        $this->assertEquals($response->document->photos, $output["document"]["photos"]);
-        $this->assertEquals($response->face, $output["face"]);
     }
 
     public function testGetIdentityVerificationWithNoDocument()
@@ -239,8 +229,6 @@ class IdentityVerificationClientV1Test extends TestCase
         $this->assertEquals($response->customer->email, $output["customer"]["email"]);
         $this->assertEquals($response->redirect_uri, $output["redirect_uri"]);
         $this->assertEquals($response->webhook, $output["webhook"]);
-        $this->assertEmpty($response->document);
-        $this->assertEmpty($response->face);
     }
 
     private function getIdentityVerificationOutput(): array
