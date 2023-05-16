@@ -44,6 +44,5 @@ final class GetIdentityVerificationResponse extends DTO
 
     protected $casts = [
         'customer' => Customer::class,
-        'document' => Document::class,
     ];
 }
