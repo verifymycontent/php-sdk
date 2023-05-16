@@ -23,7 +23,7 @@ use VerifyMyContent\SDK\IdentityVerification\Entity\Customer;
  */
 final class GetIdentityVerificationResponse extends DTO
 {
-    protected $fillable = ['id', 'customer', 'redirect_uri', 'webhook', 'status', 'document', 'face'];
+    protected $fillable = ['id', 'customer', 'redirect_uri', 'webhook', 'status'];
 
     protected $validate = [
         'id' => [
@@ -38,12 +38,6 @@ final class GetIdentityVerificationResponse extends DTO
         'webhook' => UrlValidator::class,
         'status' => [
             RequiredValidator::class,
-            StringValidator::class,
-        ],
-        'document' => [
-            ArrayValidator::class,
-        ],
-        'face' => [
             StringValidator::class,
         ],
     ];
