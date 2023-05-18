@@ -261,34 +261,6 @@ class ContentModerationClientV1Test extends TestCase
         $this->hmac = new HMAC('api-key', 'api-secret');
     }
 
-    private function staticContentParticipantsOutput(): array
-    {
-        return [
-            "id" => "ABC-123-5678-ABC",
-            "customer" => [
-                "id" => "CUSTOMER-ID",
-                "document" => [
-                    "type" => "driving-license",
-                    "country" => "GBR",
-                    "number" => "ABC-123",
-                    "issued_at" => "2017-04-13",
-                    "expires_at" => "2027-04-13",
-                    "name" => "John Snow",
-                    "dob" => "1991-09-06",
-                    "mrz" => [
-                        "P<GBRSNOW<<JOHN<<<<<<<<<<<<<<<<<<<<",
-                        "123456789012345<<<<<<<<<<<<<<<<<<00"
-                    ],
-                    "photos" => [
-                        "https://docs.verifymycontent.com/front.jpg",
-                        "https://docs.verifymycontent.com/back.jpg"
-                    ]
-                ],
-            ],
-            "face" => "https://example.com/face.jpg",
-        ];
-    }
-
     public function testStartLiveContentModeration()
     {
         $client = $this->newCmc();
