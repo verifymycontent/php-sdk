@@ -139,25 +139,6 @@ $response = $vmc->contentModeration()->getStaticContentModeration("YOUR-CONTENT-
 echo "Status: {$response->status}";
 ```
 
-### Get Static Content Moderation Results
-
-It will return uploader's identity check information if the moderation status is `Approved`. Example:
-
-- Receive an `VerifyMyContent\SDK\ContentModeration\Entity\Responses\GetStaticContentModerationParticipantsResponse`.
-
-```php
-<?php
-
-require(__DIR__ . "/vendor/autoload.php");
-
-$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
-//$vmc->useSandbox();
-
-$response = $vmc->contentModeration()->getStaticContentModerationParticipants("YOUR-CONTENT-MODERATION-ID");
-
-var_dump($response);
-```
-
 ### Receive a Static Content Moderation Webhook
 
 - Receive a webhook from VerifyMyContent with the `$_POST` data that can be parsed using the `VerifyMyContent\SDK\ContentModeration\Entity\Requests\WebhookStaticContentModerationRequest` class.
