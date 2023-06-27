@@ -107,6 +107,7 @@ $response = $vmc->contentModeration()->createStaticContentModeration([
     "description" => "Uploaded video description",
   ],
   "webhook" => "https://example.com/webhook",
+  "redirect_url" => "https://example.com/callback",
   "customer" => [
     "id" => "YOUR-CUSTOMER-UNIQUE-ID",
     "email" => "person@example.com",

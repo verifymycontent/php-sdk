@@ -11,7 +11,7 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 
 final class CreateStaticContentModerationRequest extends DTO
 {
-    protected $fillable = ['content', 'customer', 'webhook'];
+    protected $fillable = ['content', 'customer', 'webhook', 'redirect_url'];
 
     protected $validate = [
         'content' => [
