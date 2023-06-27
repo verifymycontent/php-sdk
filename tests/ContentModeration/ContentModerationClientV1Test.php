@@ -109,7 +109,7 @@ class ContentModerationClientV1Test extends TestCase
                 'phone' => '+4412345678',
             ],
             'webhook' => 'https://example.com/webhook',
-
+            'redirect_url' => 'https://example.com/redirect',
         ];
     }
 
