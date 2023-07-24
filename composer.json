@@ -20,6 +20,7 @@
     }
   ],
   "require": {
+    "verifymy/php-sdk": "^v1.0.0",
     "verifymycontent/commons": "^v1.0.2",
     "ext-json": "*",
     "phpunit/phpunit": "^9.5",
