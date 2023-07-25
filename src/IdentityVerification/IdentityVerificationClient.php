@@ -22,9 +22,5 @@ interface IdentityVerificationClient extends ExportableClient
 
     public function getIdentityVerification(string $id): GetIdentityVerificationResponse;
 
-    public function addRedirectUrls(array $urls): void;
-
-    public function removeRedirectUrls(array $urls): void;
-
     public function __construct(HMAC $hmac);
 }

@@ -4,10 +4,12 @@ namespace VerifyMyContent\SDK;
 
 use Exception;
 use InvalidArgumentException;
+use VerifyMy\SDK\VerifyMy;
 use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\SDK\Complaint\ComplaintClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
+use VerifyMy\SDK\Business\Entity\Requests\AllowedRedirectUrlsRequest;
 
 final class VerifyMyContent implements VerifyMyContentInterface
 {
@@ -31,8 +33,19 @@ final class VerifyMyContent implements VerifyMyContentInterface
      */
     private $complaintClient;
 
+    /**
+     * @var VerifyMy $verifyMy
+     */
+    private $verifyMy;
+
+    /**
+     * @var string $apiKey
+     */
+    private $apiKey;
+
     public function __construct($apiKey, $apiSecret)
     {
+        $this->apiKey = $apiKey;
         $this->hmac = new HMAC($apiKey, $apiSecret);
 
         $identityVerificationClientClassName = IdentityVerificationClient::API_VERSIONS[IdentityVerificationClient::API_VERSION_V1];
@@ -43,8 +56,31 @@ final class VerifyMyContent implements VerifyMyContentInterface
 
         $consentComplaintClientClassName = ComplaintClient::API_VERSIONS[ComplaintClient::API_VERSION_V1];
         $this->complaintClient = new $consentComplaintClientClassName($this->hmac);
+
+        $this->verifyMy = new VerifyMy(IdentityVerificationClient::PRODUCTION_URL, $apiKey);
     }
 
+    /**
+     * @param array $urls
+     * @return void
+     */
+    public function addRedirectUrls(array $urls):void
+    {
+        $this->verifyMy->business()->addAllowedRedirectUrls(new AllowedRedirectUrlsRequest(
+            ["urls" => $urls]
+        ));
+    }
+
+    /**
+     * @param array $urls
+     * @return void
+     */
+    public function removeRedirectUrls(array $urls):void
+    {
+        $this->verifyMy->business()->removeAllowedRedirectUrls(new AllowedRedirectUrlsRequest(
+            ["urls" => $urls]
+        ));
+    }
 
     /**
      * @return IdentityVerificationClient
@@ -137,5 +173,6 @@ final class VerifyMyContent implements VerifyMyContentInterface
         $this->identityVerificationClient->useSandbox();
         $this->contentModerationClient->useSandbox();
         $this->complaintClient->useSandbox();
+        $this->verifyMy = new VerifyMy(IdentityVerificationClient::SANDBOX_URL, $this->apiKey);
     }
 }

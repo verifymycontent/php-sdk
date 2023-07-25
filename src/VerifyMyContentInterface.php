@@ -10,6 +10,17 @@ use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
 interface VerifyMyContentInterface extends ExportableClient
 {
     /**
+     * @param array $urls
+     * @return void
+     */
+    public function addRedirectUrls(array $urls):void;
+
+    /**
+     * @param array $urls
+     * @return void
+     */
+    public function removeRedirectUrls(array $urls):void;
+    /**
      * @return IdentityVerificationClient
      */
     public function identityVerification(): IdentityVerificationClient;
