@@ -16,15 +16,4 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
 final class Stream extends DTO
 {
     protected $fillable = ['protocol', 'url'];
-
-    protected $validate = [
-        'protocol' => [
-            RequiredValidator::class,
-            StringValidator::class,
-        ],
-        'url' => [
-            RequiredValidator::class,
-            UrlValidator::class,
-        ],
-    ];
 }
