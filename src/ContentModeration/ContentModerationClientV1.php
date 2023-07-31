@@ -8,6 +8,7 @@ use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\StartLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse;
@@ -105,12 +106,12 @@ final class ContentModerationClientV1 implements ContentModerationClient
      * @return void
      * @throws InvalidStatusCodeException
      */
-    public function startLiveContentModeration(string $id): void
+    public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request): void
     {
         $uri = sprintf(self::ENDPOINT_START_LIVE_CONTENT_MODERATION, $id);
         $this->transport->patch(
             $uri,
-            null,
+            $request->toArray(),
             [
                 'Authorization' => $this->hmac->generate($uri, true),
             ],

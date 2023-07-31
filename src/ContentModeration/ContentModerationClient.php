@@ -5,6 +5,7 @@ namespace VerifyMyContent\SDK\ContentModeration;
 use VerifyMyContent\Commons\Transport\InvalidStatusCodeException;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\StartLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateLiveContentModerationResponse;
@@ -45,7 +46,7 @@ interface ContentModerationClient extends ExportableClient
      * @return void
      * @throws InvalidStatusCodeException
      */
-    public function startLiveContentModeration(string $id): void;
+    public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request): void;
 
     /**
      * @param CreateLiveContentModerationRequest $request

@@ -14,6 +14,7 @@ use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateAnonymousLiveCon
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateLiveContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest;
 use VerifyMyContent\SDK\ContentModeration\Entity\Requests\ChangeLiveContentRuleRequest;
+use VerifyMyContent\SDK\ContentModeration\Entity\Requests\StartLiveContentModerationRequest;
 use VerifyMyContent\SDK\Core\Validator\ValidationException;
 
 class ContentModerationClientV1Test extends TestCase
@@ -266,20 +267,33 @@ class ContentModerationClientV1Test extends TestCase
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
         $uri = sprintf(ContentModerationClientV1::ENDPOINT_START_LIVE_CONTENT_MODERATION, '123');
+        $input = $this->startLiveContentModerationInput();
 
         $mockTransport->expects($this->once())
             ->method('patch')
             ->with(
                 $this->equalTo($uri),
-                $this->equalTo(null),
+                $this->equalTo($input),
                 $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
                 [204]
             );
 
         $client->setTransport($mockTransport);
-        $client->startLiveContentModeration('123');
+        $client->startLiveContentModeration('123', new StartLiveContentModerationRequest($input));
 
         $this->assertTrue(true);
+    }
+
+
+    private function startLiveContentModerationInput()
+    {
+        return [
+            "embed_url" => "https://example.com/live-stream-embed",
+            "stream" => [
+                "protocol" => "rtmps",
+                "url" => "rtmps://your-server:443/your-video-stream"
+            ],
+        ];
     }
 
     public function testStartLiveContentModerationWithInvalidStatusCode()
@@ -287,12 +301,13 @@ class ContentModerationClientV1Test extends TestCase
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
         $uri = sprintf(ContentModerationClientV1::ENDPOINT_START_LIVE_CONTENT_MODERATION, '123');
+        $input = $this->startLiveContentModerationInput();
 
         $mockTransport->expects($this->once())
             ->method('patch')
             ->with(
                 $this->equalTo($uri),
-                $this->equalTo(null),
+                $this->equalTo($input),
                 $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
                 [204]
             )
@@ -300,9 +315,9 @@ class ContentModerationClientV1Test extends TestCase
 
         $client->setTransport($mockTransport);
         $this->expectException(InvalidStatusCodeException::class);
-        $client->startLiveContentModeration('123');
+        $client->startLiveContentModeration('123', new StartLiveContentModerationRequest($input));
     }
-
+    
     private function liveContentModerationInput($rule = 'default')
     {
         return [
