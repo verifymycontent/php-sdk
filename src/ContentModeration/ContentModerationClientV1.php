@@ -108,15 +108,15 @@ final class ContentModerationClientV1 implements ContentModerationClient
      */
     public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request = null): void
     {
+        $uri = sprintf(self::ENDPOINT_START_LIVE_CONTENT_MODERATION, $id);
         if ($request == null) {
             $request = new StartLiveContentModerationRequest([]);
         }
-        $uri = sprintf(self::ENDPOINT_START_LIVE_CONTENT_MODERATION, $id);
         $this->transport->patch(
             $uri,
             $request->toArray(),
             [
-                'Authorization' => $this->hmac->generate($uri, true),
+                'Authorization' => $this->hmac->generate($request->toArray(), true),
             ],
             [204]
         );
