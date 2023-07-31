@@ -274,7 +274,7 @@ class ContentModerationClientV1Test extends TestCase
             ->with(
                 $this->equalTo($uri),
                 $this->equalTo([]),
-                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                $this->equalTo(['Authorization' => $this->hmac->generate([], true)]),
                 [204]
             );
 
@@ -308,7 +308,7 @@ class ContentModerationClientV1Test extends TestCase
             ->with(
                 $this->equalTo($uri),
                 $this->equalTo($input),
-                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
+                $this->equalTo(['Authorization' => $this->hmac->generate($input, true)]),
                 [204]
             )
             ->willThrowException(new InvalidStatusCodeException(400));
