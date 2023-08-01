@@ -267,14 +267,13 @@ class ContentModerationClientV1Test extends TestCase
         $client = $this->newCmc();
         $mockTransport = $this->mockTransport();
         $uri = sprintf(ContentModerationClientV1::ENDPOINT_START_LIVE_CONTENT_MODERATION, '123');
-        $input = $this->startLiveContentModerationInput();
 
         $mockTransport->expects($this->once())
             ->method('patch')
             ->with(
                 $this->equalTo($uri),
-                $this->equalTo([]),
-                $this->equalTo(['Authorization' => $this->hmac->generate([], true)]),
+                $this->equalTo(null),
+                $this->equalTo(['Authorization' => $this->hmac->generate($uri, true)]),
                 [204]
             );
 
