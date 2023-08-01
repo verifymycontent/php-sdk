@@ -46,7 +46,7 @@ interface ContentModerationClient extends ExportableClient
      * @return void
      * @throws InvalidStatusCodeException
      */
-    public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request): void;
+    public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request = null): void;
 
     /**
      * @param CreateLiveContentModerationRequest $request
