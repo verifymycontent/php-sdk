@@ -270,7 +270,7 @@ $vmc->contentModeration()->pauseLivestream("YOUR-CONTENT-MODERATION-ID");
 ```
 
 
-### Updating Live Stream moderation rules
+### Resume Live Stream moderation
 
 This endpoint allows you to resume the moderation for a specific live stream
 
