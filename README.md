@@ -252,3 +252,35 @@ $vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_AP
 
 $vmc->contentModeration()->changeLiveContentRule("YOUR-CONTENT-MODERATION-ID");
 ```
+
+
+### Pausing Live Stream moderation
+
+This endpoint allows you to pause the moderation for a specific live stream
+
+```php
+<?php
+
+require(__DIR__ . "/vendor/autoload.php");
+    
+$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
+//$vmc->useSandbox();
+
+$vmc->contentModeration()->pauseLivestream("YOUR-CONTENT-MODERATION-ID");
+```
+
+
+### Updating Live Stream moderation rules
+
+This endpoint allows you to resume the moderation for a specific live stream
+
+```php
+<?php
+
+require(__DIR__ . "/vendor/autoload.php");
+    
+$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
+//$vmc->useSandbox();
+
+$vmc->contentModeration()->resumeLivestream("YOUR-CONTENT-MODERATION-ID");
+```
