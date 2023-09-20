@@ -92,5 +92,5 @@ interface ContentModerationClient extends ExportableClient
     * @return void
     * @throws InvalidStatusCodeException
     */
-    public function pauseLivestream(string $id): void;
+    public function resumeLivestream(string $id): void;
 }
