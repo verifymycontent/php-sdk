@@ -27,6 +27,7 @@ final class ContentModerationClientV1 implements ContentModerationClient
     const ENDPOINT_CREATE_ANONYMOUS_LIVE_CONTENT_MODERATION = '/api/v1/livestream-anonymous';
     const ENDPOINT_CHANGE_LIVE_CONTENT_RULE = '/api/v1/livestream/%s/rule';
     const ENDPOINT_PAUSE_LIVESTREAM = '/api/v1/livestream/%s/pause';
+    const ENDPOINT_RESUME_LIVESTREAM = '/api/v1/livestream/%s/resume';
 
     /**
      * @var HTTP $transport
@@ -218,7 +219,25 @@ final class ContentModerationClientV1 implements ContentModerationClient
     public function pauseLivestream(string $id): void
     {
         $uri = sprintf(self::ENDPOINT_PAUSE_LIVESTREAM, $id);
-        print($uri);
+        $this->transport->patch(
+            $uri,
+            null,
+            [
+                'Authorization' => $this->hmac->generate($uri, true),
+            ],
+            [204]
+        );
+    
+    }
+    /**
+     * @param string $id
+     * @param ChangeLiveContentRuleRequest $request
+     * @return void
+     * @throws InvalidStatusCodeException
+    */
+    public function resumeLivestream(string $id): void
+    {
+        $uri = sprintf(self::ENDPOINT_RESUME_LIVESTREAM, $id);
         $this->transport->patch(
             $uri,
             null,
@@ -228,4 +247,5 @@ final class ContentModerationClientV1 implements ContentModerationClient
             [204]
         );
     }
+
 }
