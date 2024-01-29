@@ -26,7 +26,14 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
  */
 final class GetLiveContentModerationResponse extends DTO
 {
-    protected $fillable = ['id', 'login_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'id', 'login_url',
+        'external_id', 'status',
+        'notes', 'tags',
+        'rule', 'type',
+        'collection_id', 'faces_id',
+        'created_at', 'updated_at'
+    ];
 
     protected $validate = [
         'id' => [
@@ -47,6 +54,18 @@ final class GetLiveContentModerationResponse extends DTO
         ],
         'tags' => [
             ArrayValidator::class,
+        ],
+        'faces_id' => [
+            ArrayValidator::class,
+        ],
+        'type' => [
+            StringValidator::class,
+        ],
+        'collection_id' => [
+            StringValidator::class,
+        ],
+        'rule' => [
+            StringValidator::class,
         ],
         'created_at' => [
             StringValidator::class,

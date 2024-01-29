@@ -18,7 +18,8 @@ final class CreateLiveContentModerationRequest extends DTO
         'external_id', 'embed_url',
         'title', 'description',
         'stream', 'rule',
-        'webhook', 'customer'
+        'webhook', 'customer',
+        'faces_id', 'type', 'collection_id'
     ];
 
     protected $validate = [
@@ -39,6 +40,15 @@ final class CreateLiveContentModerationRequest extends DTO
         'stream' => [
             RequiredValidator::class,
             ArrayValidator::class,
+        ],
+        'faces_id' => [
+            ArrayValidator::class,
+        ],
+        'type' => [
+            StringValidator::class,
+        ],
+        'collection_id' => [
+            StringValidator::class,
         ],
         'rule' => [
             StringValidator::class,

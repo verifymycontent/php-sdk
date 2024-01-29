@@ -21,12 +21,24 @@ use VerifyMyContent\SDK\Core\Validator\UrlValidator;
  * @property-read string $status
  * @property-read string $notes
  * @property-read string[] $tags
+ * @property-read string $rule
+ * @property-read string $type
+ * @property-read string $collection_id
+ * @property-read string[] $faces_id
  * @property-read DateTime $created_at
  * @property-read DateTime $updated_at
  */
 final class CreateLiveContentModerationResponse extends DTO
 {
-    protected $fillable = ['id', 'login_url', 'external_id', 'status', 'notes', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'id', 'login_url', 'external_id',
+        'status', 'notes', 'tags',
+        'rule', 'type',
+        'collection_id', 'faces_id',
+        'created_at', 'updated_at',
+        'faces_id', 'type',
+        'collection_id', 'rule'
+    ];
 
     protected $validate = [
         'id' => [
@@ -47,6 +59,18 @@ final class CreateLiveContentModerationResponse extends DTO
         ],
         'tags' => [
             ArrayValidator::class,
+        ],
+        'faces_id' => [
+            ArrayValidator::class,
+        ],
+        'type' => [
+            StringValidator::class,
+        ],
+        'collection_id' => [
+            StringValidator::class,
+        ],
+        'rule' => [
+            StringValidator::class,
         ],
         'created_at' => [
             StringValidator::class,
