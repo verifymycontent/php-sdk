@@ -36,8 +36,6 @@ final class CreateLiveContentModerationResponse extends DTO
         'rule', 'type',
         'collection_id', 'faces_id',
         'created_at', 'updated_at',
-        'faces_id', 'type',
-        'collection_id', 'rule'
     ];
 
     protected $validate = [
