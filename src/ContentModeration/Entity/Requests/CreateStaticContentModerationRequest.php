@@ -14,7 +14,7 @@ final class CreateStaticContentModerationRequest extends DTO
 {
     protected $fillable = [
         'content', 'customer', 'webhook', 'redirect_url',
-        'faces_id', 'type', 'collection_id'
+        'faces_id', 'type', 'collection_id', 'participants'
     ];
 
     protected $validate = [
@@ -32,6 +32,9 @@ final class CreateStaticContentModerationRequest extends DTO
         ],
         'type' => [
             StringValidator::class,
+        ],
+        'participants' => [
+            ArrayValidator::class,
         ],
         'collection_id' => [
             StringValidator::class,
