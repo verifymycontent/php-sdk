@@ -112,7 +112,11 @@ $response = $vmc->contentModeration()->createStaticContentModeration([
     "id" => "YOUR-CUSTOMER-UNIQUE-ID",
     "email" => "person@example.com",
     "phone" => "+4412345678"
-  ]
+  ],
+  "type" => "face-match",
+  "rule" => "default",
+  "faces_id" => ["ID"],
+  "collection_id" => "YOUR-COLLECTION-ID"
 ]);
 
 // save $response->id if you want to call the moderation status endpoint later
@@ -190,7 +194,11 @@ $response = $vmc->contentModeration()->createLiveContentModeration([
       "id" => "YOUR-CUSTOMER-UNIQUE-ID",
       "email" => "person@example.com",
       "phone" => "+4412345678"
-  ]
+  ],
+  "type" => "face-match",
+  "rule" => "default",
+  "faces_id" => ["ID"],
+  "collection_id" => "YOUR-COLLECTION-ID"
 ]);
 
 // save $response->id to start live stream later
