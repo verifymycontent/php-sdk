@@ -27,7 +27,7 @@ final class CreateStaticContentModerationResponse extends DTO
     'external_id', 'status', 
     'notes', 'tags', 
     'created_at', 'updated_at',
-    'rule', 'type',
+    'rule', 'type', 'participants',
     'collection_id', 'faces_id',
 ];
 
@@ -62,6 +62,9 @@ final class CreateStaticContentModerationResponse extends DTO
         ],
         'rule' => [
             StringValidator::class,
+        ],
+        'participants' => [
+            ArrayValidator::class,
         ],
         'created_at' => [
             StringValidator::class,

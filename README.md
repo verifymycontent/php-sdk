@@ -116,7 +116,12 @@ $response = $vmc->contentModeration()->createStaticContentModeration([
   "type" => "face-match",
   "rule" => "default",
   "faces_id" => ["ID"],
-  "collection_id" => "YOUR-COLLECTION-ID"
+  "collection_id" => "YOUR-COLLECTION-ID",
+  "participants" => [[
+            "id" => "YOUR-CUSTOMER-UNIQUE-ID",
+            "email" => "person@example.com",
+            "phone" => "+4412345678"
+  ]]
 ]);
 
 // save $response->id if you want to call the moderation status endpoint later
