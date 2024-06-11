@@ -42,10 +42,15 @@ final class VerifyMyContent implements VerifyMyContentInterface
      * @var string $apiKey
      */
     private $apiKey;
+    /**
+     * @var string
+     */
+    private $apiSecret;
 
     public function __construct($apiKey, $apiSecret)
     {
         $this->apiKey = $apiKey;
+        $this->apiSecret = $apiSecret;
         $this->hmac = new HMAC($apiKey, $apiSecret);
 
         $identityVerificationClientClassName = IdentityVerificationClient::API_VERSIONS[IdentityVerificationClient::API_VERSION_V1];
@@ -57,7 +62,7 @@ final class VerifyMyContent implements VerifyMyContentInterface
         $consentComplaintClientClassName = ComplaintClient::API_VERSIONS[ComplaintClient::API_VERSION_V1];
         $this->complaintClient = new $consentComplaintClientClassName($this->hmac);
 
-        $this->verifyMy = new VerifyMy(IdentityVerificationClient::PRODUCTION_URL, $apiKey);
+        $this->verifyMy = new VerifyMy(IdentityVerificationClient::PRODUCTION_URL, $apiKey, $apiSecret);
     }
 
     /**
@@ -173,6 +178,6 @@ final class VerifyMyContent implements VerifyMyContentInterface
         $this->identityVerificationClient->useSandbox();
         $this->contentModerationClient->useSandbox();
         $this->complaintClient->useSandbox();
-        $this->verifyMy = new VerifyMy(IdentityVerificationClient::SANDBOX_URL, $this->apiKey);
+        $this->verifyMy = new VerifyMy(IdentityVerificationClient::SANDBOX_URL, $this->apiKey, $this->apiSecret);
     }
 }
