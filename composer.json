@@ -20,7 +20,7 @@
     }
   ],
   "require": {
-    "verifymy/php-sdk": "^v1.0.0",
+    "verifymy/php-sdk": "^v2.0.0",
     "verifymycontent/commons": "^v1.0.2",
     "ext-json": "*",
     "php": "^7.4|^8.0"
