@@ -14,7 +14,7 @@ final class CreateStaticContentModerationRequest extends DTO
 {
     protected $fillable = [
         'content', 'customer', 'webhook', 'redirect_url',
-        'faces_id', 'type', 'collection_id', 'participants'
+        'faces_id', 'type', 'collection_id', 'participants', 'rule'
     ];
 
     protected $validate = [
