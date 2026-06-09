@@ -108,7 +108,7 @@ final class ContentModerationClientV1 implements ContentModerationClient
      * @return void
      * @throws InvalidStatusCodeException
      */
-    public function startLiveContentModeration(string $id, StartLiveContentModerationRequest $request = null): void
+    public function startLiveContentModeration(string $id, ?StartLiveContentModerationRequest $request = null): void
     {
         $uri = sprintf(self::ENDPOINT_START_LIVE_CONTENT_MODERATION, $id);
         $req = null;

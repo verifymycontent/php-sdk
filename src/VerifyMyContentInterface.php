@@ -6,6 +6,7 @@ use VerifyMyContent\SDK\Complaint\ComplaintClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\Core\ExportableClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
+use VerifyMyContent\SDK\ReIdentification\ReIdentificationClient;
 
 interface VerifyMyContentInterface extends ExportableClient
 {
@@ -30,6 +31,11 @@ interface VerifyMyContentInterface extends ExportableClient
     public function complaint(): ComplaintClient;
 
     /**
+     * @return ReIdentificationClient
+     */
+    public function reIdentification(): ReIdentificationClient;
+
+    /**
      * @param string|IdentityVerificationClient $client
      * @return void
      */
@@ -46,4 +52,10 @@ interface VerifyMyContentInterface extends ExportableClient
      * @return void
      */
     public function setComplaintClient($client): void;
+
+    /**
+     * @param string|ReIdentificationClient $client
+     * @return void
+     */
+    public function setReIdentificationClient($client): void;
 }
