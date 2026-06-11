@@ -86,6 +86,62 @@ if ($webhook->status === \VerifyMyContent\SDK\IdentityVerification\IdentityVerif
 }
 ```
 
+### Start a Re-Identification
+
+Use the `createReIdentification` of the `VerifyMyContent\SDK\ReIdentification\ReIdentificationClient` abstraction inside `VerifyMyContent\VerifyMyContent` passing a `VerifyMyContent\SDK\ReIdentification\Entity\Requests\CreateReIdentificationRequest` and receiving a `VerifyMyContent\SDK\ReIdentification\Entity\Responses\CreateReIdentificationResponse`.
+
+```php
+<?php
+require(__DIR__ . "/vendor/autoload.php");
+
+$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
+//$vmc->useSandbox();
+
+$response = $vmc->reIdentification()->createReIdentification(
+    new \VerifyMyContent\SDK\ReIdentification\Entity\Requests\CreateReIdentificationRequest([
+        "customer" => [
+            "id" => "YOUR-CUSTOMER-UNIQUE-ID",
+            "email" => "person@example.com",
+        ],
+        "redirect_uri" => "https://example.com/callback",
+        "webhook" => "https://example.com/webhook",
+    ])
+);
+
+// save $response->id if you want to track this re-identification
+
+// redirect user to re-identify
+header("Location: {$response->redirect_uri}");
+```
+
+### Retrieve Re-Identification by ID
+
+```php
+<?php
+require(__DIR__ . "/vendor/autoload.php");
+
+$vmc = new VerifyMyContent\VerifyMyContent(getenv('VMC_API_KEY'), getenv('VMC_API_SECRET'));
+//$vmc->useSandbox();
+
+$response = $vmc->reIdentification()->getReIdentification("YOUR-RE-IDENTIFICATION-ID");
+
+// Printing current status
+echo "Status: {$response->status}";
+```
+
+### Receive a Re-Identification Webhook
+
+```php
+<?php
+require(__DIR__ . "/vendor/autoload.php");
+
+$data = json_decode(file_get_contents('php://input'), true);
+$webhook = new \VerifyMyContent\SDK\ReIdentification\Entity\Requests\WebhookReIdentificationRequest($data);
+
+// Printing current status
+echo "Status: {$webhook->status} received from re-identification {$webhook->id}";
+```
+
 ### Create a Static Content Moderation
 
 Use the `createStaticContentModeration` of the `VerifyMyContent\SDK\ContentModeration\ContentModerationClient` abstraction inside `VerifyMyContent\VerifyMyContent` passing an `VerifyMyContent\SDK\ContentModeration\Entity\Requests\CreateStaticContentModerationRequest` and receiving an `VerifyMyContent\SDK\ContentModeration\Entity\Responses\CreateStaticContentModerationResponse`.

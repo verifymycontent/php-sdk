@@ -9,6 +9,7 @@ use VerifyMyContent\Commons\Security\HMAC;
 use VerifyMyContent\SDK\Complaint\ComplaintClient;
 use VerifyMyContent\SDK\ContentModeration\ContentModerationClient;
 use VerifyMyContent\SDK\IdentityVerification\IdentityVerificationClient;
+use VerifyMyContent\SDK\ReIdentification\ReIdentificationClient;
 use VerifyMy\SDK\Business\Entity\Requests\AllowedRedirectUrlsRequest;
 
 final class VerifyMyContent implements VerifyMyContentInterface
@@ -32,6 +33,11 @@ final class VerifyMyContent implements VerifyMyContentInterface
      * @var ComplaintClient $complaintClient
      */
     private $complaintClient;
+
+    /**
+     * @var ReIdentificationClient $reIdentificationClient
+     */
+    private $reIdentificationClient;
 
     /**
      * @var VerifyMy $verifyMy
@@ -61,6 +67,9 @@ final class VerifyMyContent implements VerifyMyContentInterface
 
         $consentComplaintClientClassName = ComplaintClient::API_VERSIONS[ComplaintClient::API_VERSION_V1];
         $this->complaintClient = new $consentComplaintClientClassName($this->hmac);
+
+        $reIdentificationClientClassName = ReIdentificationClient::API_VERSIONS[ReIdentificationClient::API_VERSION_V1];
+        $this->reIdentificationClient = new $reIdentificationClientClassName($this->hmac);
 
         $this->verifyMy = new VerifyMy(IdentityVerificationClient::PRODUCTION_URL, $apiKey, $apiSecret);
     }
@@ -103,6 +112,23 @@ final class VerifyMyContent implements VerifyMyContentInterface
     public function complaint(): ComplaintClient
     {
         return $this->complaintClient;
+    }
+
+    /**
+     * @return ReIdentificationClient
+     */
+    public function reIdentification(): ReIdentificationClient
+    {
+        return $this->reIdentificationClient;
+    }
+
+    /**
+     * @param string|ReIdentificationClient $client
+     * @return void
+     */
+    public function setReIdentificationClient($client): void
+    {
+        $this->setClient($client, 'reIdentificationClient', ReIdentificationClient::class, ReIdentificationClient::API_VERSIONS);
     }
 
 
@@ -178,6 +204,7 @@ final class VerifyMyContent implements VerifyMyContentInterface
         $this->identityVerificationClient->useSandbox();
         $this->contentModerationClient->useSandbox();
         $this->complaintClient->useSandbox();
+        $this->reIdentificationClient->useSandbox();
         $this->verifyMy = new VerifyMy(IdentityVerificationClient::SANDBOX_URL, $this->apiKey, $this->apiSecret);
     }
 }
